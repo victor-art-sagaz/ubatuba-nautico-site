@@ -1,0 +1,27 @@
+rules_version = '2';
+
+// REGRAS PREPARADAS PARA USO FUTURO. Revise antes de publicar no Firebase.
+// Princípio: nada é público por padrão. Reservas e dados pessoais NUNCA são lidos
+// nem gravados diretamente pelo navegador. A gravação deve passar por uma
+// Cloud Function (Admin SDK) que valida os dados e aplica proteção contra abuso
+// (App Check, limite de requisições, verificação de campos).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Catálogo público (opcional): leitura aberta, escrita somente pelo painel/servidor.
+    match /catalog/{document=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Reservas: sem acesso do cliente (navegador). O Admin SDK ignora estas regras.
+    match /bookingRequests/{bookingId} {
+      allow read, write: if false;
+    }
+
+    // Qualquer outro caminho: bloqueado.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
