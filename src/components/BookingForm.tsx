@@ -70,7 +70,7 @@ export function BookingForm({ preset }: BookingFormProps) {
   const [values, setValues] = useState<BookingFormValues>(emptyForm)
   const [errors, setErrors] = useState<FieldErrors>({})
   const [status, setStatus] = useState<Status>('idle')
-  // Passos fiéis à animação: enter -> dock -> walk -> jump -> accelerate
+  // Passos fiéis ao vídeo de referência: 'enter' (lancha entra) -> 'dock' (para no pier) -> 'walk' (stickman anda) -> 'jump' (pula na lancha) -> 'accelerate' (arranca com ondas)
   const [animStep, setAnimStep] = useState<'idle' | 'enter' | 'dock' | 'walk' | 'jump' | 'accelerate'>('idle')
   const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null)
 
@@ -119,30 +119,30 @@ export function BookingForm({ preset }: BookingFormProps) {
 
     setStatus('submitting')
 
-    // 1. A lancha entra pela esquerda até ao píer (0s - 1.2s)
+    // 1. Lancha entra deslizando da esquerda até o píer (0s - 1.2s)
     setAnimStep('enter')
 
-    // 2. Lancha fixa atracada ao píer (1.2s)
+    // 2. Lancha atracada no píer (1.2s - 2.0s)
     setTimeout(() => {
       setAnimStep('dock')
     }, 1200)
 
-    // 3. Stickman caminha no píer (2.0s)
+    // 3. Stickman caminha sobre a plataforma do píer (2.0s - 2.8s)
     setTimeout(() => {
       setAnimStep('walk')
     }, 2000)
 
-    // 4. Stickman pula para dentro da lancha (2.8s)
+    // 4. Stickman dá o pulo para dentro da lancha (2.8s - 3.5s)
     setTimeout(() => {
       setAnimStep('jump')
     }, 2800)
 
-    // 5. Proa eleva, motor arranca e lancha dispara deixando marola (3.6s)
+    // 5. Lancha inclina a proa para cima e arranca acelerando com marola (3.5s - 5.5s)
     setTimeout(() => {
       setAnimStep('accelerate')
-    }, 3600)
+    }, 3500)
 
-    // Finalização e redirecionamento para o WhatsApp
+    // Conclusão e liberação do link do WhatsApp
     setTimeout(async () => {
       try {
         const outcome = await submitBooking(validation.payload as any)
@@ -370,24 +370,24 @@ export function BookingForm({ preset }: BookingFormProps) {
         Enviar este formulário não garante a reserva: {siteConfig.name} confirmará a disponibilidade e o valor final pelo WhatsApp.
       </p>
 
-      {/* BOTÃO COM ANIMAÇÃO FIEL AO VÍDEO */}
+      {/* BOTÃO ANIMADO NÁUTICO 2D (IGUAL AO VÍDEO RESTRITO AO CONTAINER DO BOTÃO) */}
       <button
         type="submit"
         disabled={submitting}
-        className="relative mt-6 h-20 w-full overflow-hidden rounded-2xl bg-[#ecefe6] font-semibold text-navy-950 shadow-md transition-all duration-300 hover:bg-[#e0e4d7] active:scale-[0.99] disabled:cursor-not-allowed"
+        className="relative mt-6 h-20 w-full overflow-hidden rounded-2xl bg-[#e5e7eb] font-semibold text-navy-950 shadow-md transition-all duration-300 hover:bg-[#d1d5db] active:scale-[0.99] disabled:cursor-not-allowed"
       >
         {submitting ? (
-          <div className="relative flex h-full w-full items-center overflow-hidden bg-[#ecefe6]">
-            {/* CAMADA DO MAR AZUL COMPLETA NA PARTE INFERIOR */}
-            <div className="absolute inset-x-0 bottom-0 h-7 bg-[#0284c7] border-t-2 border-[#38bdf8]" />
+          <div className="relative h-full w-full overflow-hidden bg-[#e5e7eb]">
+            {/* TODO O MAR PREENCHIDO EM AZUL ABAIXO DA LINHA D'ÁGUA */}
+            <div className="absolute inset-x-0 bottom-0 h-8 bg-[#0284c7] border-t-2 border-[#38bdf8]" />
 
-            {/* PÍER / TRAPICHE FIXO NA ESQUERDA */}
-            <div className="absolute left-0 bottom-7 z-10 flex flex-col items-start">
+            {/* PÍER / TRAPICHE FIXO NO CANTO ESQUERDO */}
+            <div className="absolute left-0 bottom-8 z-10 flex flex-col items-start">
               <div className="h-[7px] w-28 bg-[#4b5563] rounded-r-sm shadow-sm" />
-              <div className="ml-20 h-6 w-[6px] bg-[#374151]" />
+              <div className="ml-20 h-7 w-[6px] bg-[#374151]" />
             </div>
 
-            {/* STICKMAN (Caminha no Píer -> Pula na Lancha) */}
+            {/* BONECO STICKMAN (Caminha no Píer -> Pula na Lancha) */}
             <div
               className={`absolute z-30 transition-all ${
                 animStep === 'enter' || animStep === 'dock'
@@ -395,7 +395,7 @@ export function BookingForm({ preset }: BookingFormProps) {
                   : animStep === 'walk'
                   ? 'bottom-[35px] left-20 opacity-100 duration-700 ease-linear'
                   : animStep === 'jump'
-                  ? 'bottom-[42px] left-32 opacity-100 duration-300 ease-out'
+                  ? 'bottom-[44px] left-32 opacity-100 duration-300 ease-out'
                   : 'bottom-[28px] left-[142px] opacity-100 transition-none'
               } ${animStep === 'accelerate' ? 'translate-x-[480px] sm:translate-x-[680px] duration-[1600ms] ease-in' : ''}`}
             >
@@ -405,22 +405,22 @@ export function BookingForm({ preset }: BookingFormProps) {
               </svg>
             </div>
 
-            {/* ONDAS DE MAROLA NA ACELERAÇÃO */}
+            {/* ONDAS DE MAROLA NA ACELERAÇÃO (Vetor idêntico ao vídeo) */}
             {animStep === 'accelerate' && (
-              <div className="absolute left-28 bottom-[26px] z-10 flex items-end gap-1 animate-pulse">
+              <div className="absolute left-28 bottom-[28px] z-10 flex items-end gap-1 animate-pulse">
                 <svg className="h-5 w-36 text-[#0284c7]" viewBox="0 0 120 20" fill="currentColor">
                   <polygon points="0,20 15,5 25,20 40,3 55,20 70,2 85,20 100,0 100,20 120,5 120,20" fill="#ffffff" stroke="#0284c7" strokeWidth="1" />
                 </svg>
               </div>
             )}
 
-            {/* LANCHA VISTA DE LADO (Entra do lado esquerdo -> Para no píer -> Empina e arranca) */}
+            {/* LANCHA (Entra do lado esquerdo -> Atraca no Píer -> Arranca com a proa inclinada) */}
             <div
               className={`absolute bottom-[20px] z-20 transition-all ${
                 animStep === 'enter'
-                  ? '-left-32 duration-0'
+                  ? '-left-36 duration-0'
                   : animStep === 'dock' || animStep === 'walk' || animStep === 'jump'
-                  ? 'left-24 duration-[1000ms] ease-out'
+                  ? 'left-24 duration-[1100ms] ease-out'
                   : 'left-24'
               } ${
                 animStep === 'accelerate'

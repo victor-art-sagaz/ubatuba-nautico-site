@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Anchor, Compass, Ship, Menu, X, ChevronDown } from 'lucide-react'
+import { Anchor, Compass, Ship, Map, HelpCircle, Menu, X, ChevronDown } from 'lucide-react'
 import { Logo } from '@/components/Logo'
 
 export function Header() {
@@ -16,20 +16,29 @@ export function Header() {
   }, [])
 
   const boats = [
-    { name: 'Musa II', hash: '#experiencias' },
-    { name: 'Aloha', hash: '#experiencias' },
-    { name: 'Lancha 20 pés', hash: '#experiencias' },
-    { name: 'Carpe Diem', hash: '#experiencias' },
-    { name: 'Runner', hash: '#experiencias' },
-    { name: 'Passeio Compartilhado', hash: '#experiencias' },
+    { name: 'Musa II' },
+    { name: 'Aloha' },
+    { name: 'Lancha 20 pés' },
+    { name: 'Carpe Diem' },
+    { name: 'Runner' },
+    { name: 'Passeio Compartilhado' },
   ]
 
-  const scrollToSection = (id: string) => {
+  const scrollToTarget = (targetId: string) => {
     setMobileMenuOpen(false)
     setBoatsDropdownOpen(false)
-    const element = document.querySelector(id)
+
+    let element = document.querySelector(targetId)
+
+    if (!element && targetId === '#roteiros') {
+      element = document.querySelector('#experiencias') || document.querySelector('#destinos') || document.querySelector('#passeios')
+    }
+    if (!element && targetId === '#experiencias') {
+      element = document.querySelector('#embarcacoes') || document.querySelector('section')
+    }
+
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
   }
 
@@ -38,14 +47,14 @@ export function Header() {
       <div
         className={`mx-auto max-w-7xl rounded-2xl transition-all duration-300 ${
           isScrolled
-            ? 'bg-navy-950/85 backdrop-blur-md border border-white/10 shadow-lg py-3 px-6'
+            ? 'bg-navy-950/90 backdrop-blur-md border border-white/10 shadow-lg py-3 px-6'
             : 'bg-navy-950/50 backdrop-blur-sm border border-white/5 py-4 px-6'
         }`}
       >
         <div className="flex items-center justify-between">
           <Logo tone="light" />
 
-          {/* DESKTOP */}
+          {/* DESKTOP NAVEGAÇÃO COM ÍCONES */}
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-white">
             <button
               type="button"
@@ -56,6 +65,7 @@ export function Header() {
               Início
             </button>
 
+            {/* DROPDOWN EMBARCAÇÕES */}
             <div
               className="relative group"
               onMouseEnter={() => setBoatsDropdownOpen(true)}
@@ -63,7 +73,7 @@ export function Header() {
             >
               <button
                 type="button"
-                onClick={() => scrollToSection('#experiencias')}
+                onClick={() => scrollToTarget('#experiencias')}
                 className="flex items-center gap-1.5 transition hover:text-cyan-400 py-2"
               >
                 <Ship className="w-4 h-4 text-cyan-400" />
@@ -82,7 +92,7 @@ export function Header() {
                   <button
                     key={boat.name}
                     type="button"
-                    onClick={() => scrollToSection(boat.hash)}
+                    onClick={() => scrollToTarget('#experiencias')}
                     className="block w-full text-left px-3 py-2 rounded-lg text-sm text-gray-200 hover:bg-white/10 hover:text-cyan-300 transition"
                   >
                     {boat.name}
@@ -93,17 +103,19 @@ export function Header() {
 
             <button
               type="button"
-              onClick={() => scrollToSection('#roteiros')}
-              className="transition hover:text-cyan-400"
+              onClick={() => scrollToTarget('#roteiros')}
+              className="flex items-center gap-1.5 transition hover:text-cyan-400"
             >
+              <Map className="w-4 h-4 text-cyan-400" />
               Roteiros
             </button>
 
             <button
               type="button"
-              onClick={() => scrollToSection('#faq')}
-              className="transition hover:text-cyan-400"
+              onClick={() => scrollToTarget('#faq')}
+              className="flex items-center gap-1.5 transition hover:text-cyan-400"
             >
+              <HelpCircle className="w-4 h-4 text-cyan-400" />
               Dúvidas
             </button>
           </nav>
@@ -111,7 +123,7 @@ export function Header() {
           <div className="hidden md:block">
             <button
               type="button"
-              onClick={() => scrollToSection('#reserva')}
+              onClick={() => scrollToTarget('#reserva')}
               className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-navy-950 font-semibold text-sm transition transform hover:scale-105 shadow-md"
             >
               <Anchor className="w-4 h-4" />
@@ -137,20 +149,22 @@ export function Header() {
                 window.scrollTo({ top: 0, behavior: 'smooth' })
                 setMobileMenuOpen(false)
               }}
-              className="block w-full text-left py-2 hover:text-cyan-400"
+              className="flex items-center gap-2 w-full text-left py-2 hover:text-cyan-400"
             >
+              <Compass className="w-4 h-4 text-cyan-400" />
               Início
             </button>
 
             <div className="space-y-1 pl-2 border-l border-cyan-500/30">
-              <p className="text-xs font-semibold text-cyan-400 uppercase tracking-wider py-1">
+              <p className="text-xs font-semibold text-cyan-400 uppercase tracking-wider py-1 flex items-center gap-1.5">
+                <Ship className="w-3.5 h-3.5" />
                 Nossas Embarcações
               </p>
               {boats.map((boat) => (
                 <button
                   key={boat.name}
                   type="button"
-                  onClick={() => scrollToSection(boat.hash)}
+                  onClick={() => scrollToTarget('#experiencias')}
                   className="block w-full text-left py-1.5 text-gray-300 hover:text-white"
                 >
                   {boat.name}
@@ -160,23 +174,25 @@ export function Header() {
 
             <button
               type="button"
-              onClick={() => scrollToSection('#roteiros')}
-              className="block w-full text-left py-2 hover:text-cyan-400"
+              onClick={() => scrollToTarget('#roteiros')}
+              className="flex items-center gap-2 w-full text-left py-2 hover:text-cyan-400"
             >
+              <Map className="w-4 h-4 text-cyan-400" />
               Roteiros
             </button>
 
             <button
               type="button"
-              onClick={() => scrollToSection('#faq')}
-              className="block w-full text-left py-2 hover:text-cyan-400"
+              onClick={() => scrollToTarget('#faq')}
+              className="flex items-center gap-2 w-full text-left py-2 hover:text-cyan-400"
             >
+              <HelpCircle className="w-4 h-4 text-cyan-400" />
               Dúvidas
             </button>
 
             <button
               type="button"
-              onClick={() => scrollToSection('#reserva')}
+              onClick={() => scrollToTarget('#reserva')}
               className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-cyan-500 text-navy-950 font-semibold mt-2"
             >
               <Anchor className="w-4 h-4" />
