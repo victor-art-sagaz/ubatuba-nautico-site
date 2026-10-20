@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { Gauge } from 'lucide-react'
 import { navItems } from '@/config/navigation'
 import { isPlaceholder, siteConfig } from '@/config/site'
 import { Logo } from '@/components/Logo'
@@ -10,11 +11,11 @@ export function Footer() {
   return (
     <footer className="bg-navy-950 pb-24 pt-14 text-navy-200 md:pb-10">
       <div className="container">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
           <div className="space-y-4">
             <Logo tone="light" />
             <p className="max-w-xs text-sm leading-relaxed text-navy-300">
-              Passeios de lancha e barco e aluguel de embarcações em {siteConfig.city}.
+              Passeios de lancha e aluguel de embarcações em {siteConfig.city}.
             </p>
             <div className="flex flex-wrap gap-2">
               <SocialLink kind="instagram" className="text-white ring-white/25" />
@@ -55,9 +56,29 @@ export function Footer() {
                   </a>
                 )}
               </li>
-              <li>CNPJ: [A INFORMAR PELA EMPRESA]</li>
               <li>Site: {siteConfig.domain}</li>
             </ul>
+          </div>
+
+          {/* NOVA SEÇÃO DE HORÁRIOS COM BARÔMETRO */}
+          <div>
+            <h2 className="mb-4 font-sans text-sm font-bold uppercase tracking-wider !text-white">Horários</h2>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center gap-2.5">
+                <Gauge className="h-5 w-5 shrink-0 text-cyan-400" />
+                <div>
+                  <p className="font-medium text-white">Segunda a Sexta</p>
+                  <p className="text-xs text-navy-300">8:00 às 18:00</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <Gauge className="h-5 w-5 shrink-0 text-cyan-400" />
+                <div>
+                  <p className="font-medium text-white">Sábado e Domingo</p>
+                  <p className="text-xs text-navy-300">8:00 às 18:00</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div>
