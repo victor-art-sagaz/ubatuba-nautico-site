@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import { navItems } from '@/config/navigation'
-import { siteConfig } from '@/config/site'
+
 import { ButtonLink } from '@/components/Button'
 import { Logo } from '@/components/Logo'
 import { cn } from '@/lib/cn'

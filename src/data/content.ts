@@ -41,7 +41,7 @@ export const faqItems: FaqItem[] = [
     id: 'faq-pagamento',
     question: 'Quais são as formas de pagamento?',
     answer:
-      'Consulte as formas de pagamento disponíveis diretamente com a equipe ao solicitar sua reserva. Os preços exibidos são valores iniciais e aparecem com a indicação "A partir" de'.',
+      'Consulte as formas de pagamento disponíveis diretamente com a equipe ao solicitar sua reserva. Os preços exibidos são valores iniciais e aparecem com a indicação A partir de.'
   },
 ]
 
