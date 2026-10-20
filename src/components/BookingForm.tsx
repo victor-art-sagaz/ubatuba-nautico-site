@@ -70,7 +70,8 @@ export function BookingForm({ preset }: BookingFormProps) {
   const [values, setValues] = useState<BookingFormValues>(emptyForm)
   const [errors, setErrors] = useState<FieldErrors>({})
   const [status, setStatus] = useState<Status>('idle')
-  const [animState, setAnimState] = useState<'idle' | 'step1' | 'step2' | 'step3' | 'done'>('idle')
+  // Passos da animação: arrive (entra e para) -> board (stickman pula) -> accelerate (proa empina e acelera com marola)
+  const [animStep, setAnimStep] = useState<'idle' | 'arrive' | 'board' | 'accelerate'>('idle')
   const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null)
 
   useEffect(() => {
@@ -94,7 +95,7 @@ export function BookingForm({ preset }: BookingFormProps) {
     setErrors({})
     setWhatsappUrl(null)
     setStatus('idle')
-    setAnimState('idle')
+    setAnimStep('idle')
   }
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -117,21 +118,22 @@ export function BookingForm({ preset }: BookingFormProps) {
     }
 
     setStatus('submitting')
-    setAnimState('step1') // Caixa de reserva aparece
 
-    // Passo 2: A lancha aproxima-se e acende os faróis
+    // 1. A lancha entra e para suavemente no meio (1.2s)
+    setAnimStep('arrive')
+
+    // 2. Bonequinho stickman pula em cima da lancha (1.2s depois)
     setTimeout(() => {
-      setAnimState('step2')
-    }, 1000)
+      setAnimStep('board')
+    }, 1200)
 
-    // Passo 3: A lancha acelera puxando a reserva
+    // 3. Proa eleva, ondas começam a mexer e a lancha acelera para a direita (2.2s depois)
     setTimeout(() => {
-      setAnimState('step3')
-    }, 2200)
+      setAnimStep('accelerate')
+    }, 2400)
 
-    // Finalização e redirecionamento
+    // Finaliza e prepara a mensagem após a saída
     setTimeout(async () => {
-      setAnimState('done')
       try {
         const outcome = await submitBooking(validation.payload as any)
         setWhatsappUrl(outcome.whatsappUrl || null)
@@ -139,7 +141,7 @@ export function BookingForm({ preset }: BookingFormProps) {
       } catch {
         setStatus('error')
       }
-    }, 3600)
+    }, 4200)
   }
 
   const submitting = status === 'submitting'
@@ -358,65 +360,80 @@ export function BookingForm({ preset }: BookingFormProps) {
         Enviar este formulário não garante a reserva: {siteConfig.name} confirmará a disponibilidade e o valor final pelo WhatsApp.
       </p>
 
-      {/* BOTÃO ANIMADO (CANAL NÁUTICO MUSA) */}
+      {/* BOTÃO ANIMADO NÁUTICO COM MAR CALMO, STICKMAN E ACELERAÇÃO COM PROA ELEVADA */}
       <button
         type="submit"
         disabled={submitting}
-        className="relative mt-6 h-14 w-full overflow-hidden rounded-full bg-navy-950 font-semibold text-white shadow-xl transition-all duration-300 hover:bg-navy-900 active:scale-[0.98] disabled:cursor-not-allowed"
+        className="relative mt-6 h-14 w-full overflow-hidden rounded-2xl bg-cyan-600 font-semibold text-white shadow-lg transition-all duration-300 hover:bg-cyan-500 active:scale-[0.99] disabled:cursor-not-allowed"
       >
         {submitting ? (
-          <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-navy-950">
-            {/* Canal de navegação náutica */}
-            <div className="absolute inset-x-0 h-10 bg-slate-900 border-y border-dashed border-slate-700/60 flex items-center justify-around opacity-80">
-              <div className="h-0.5 w-6 bg-amber-400/50 rounded" />
-              <div className="h-0.5 w-6 bg-amber-400/50 rounded" />
-              <div className="h-0.5 w-6 bg-amber-400/50 rounded" />
-              <div className="h-0.5 w-6 bg-amber-400/50 rounded" />
+          <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-sky-900">
+            {/* SUPERFÍCIE D'ÁGUA EM 2D (MAR CALMO) */}
+            <div className="absolute inset-x-0 bottom-0 h-6 bg-cyan-700/80 border-t border-cyan-400/50">
+              {/* ONDAS EM MOVIMENTO (Ativam quando a lancha acelera no passo 'accelerate') */}
+              <div
+                className={`h-full w-full bg-[radial-gradient(#a5f3fc_1.5px,transparent_1.5px)] [background-size:12px_12px] opacity-60 ${
+                  animStep === 'accelerate' ? 'animate-pulse' : ''
+                }`}
+              />
             </div>
 
-            {/* Caixa de Reserva MUSA */}
+            {/* LANCHA E BONEQUINHO STICKMAN */}
             <div
-              className={`absolute left-6 z-10 h-7 w-7 rounded-lg bg-amber-400 border-2 border-amber-500 shadow-md flex items-center justify-center text-navy-950 font-bold text-[10px] transition-all duration-500 ${
-                animState !== 'idle' ? 'scale-100 opacity-100' : 'scale-0 opacity-0'
-              } ${animState === 'step3' ? 'translate-x-[400px] sm:translate-x-[600px] opacity-0 transition-all duration-[1300ms] ease-in' : ''}`}
-            >
-              MUSA
-            </div>
-
-            {/* Lancha e Faróis */}
-            <div
-              className={`absolute z-20 flex items-center transition-all duration-700 ease-out ${
-                animState === 'step1'
-                  ? 'left-[-80px]'
-                  : animState === 'step2'
-                  ? 'left-14'
-                  : 'left-14 translate-x-[420px] sm:translate-x-[650px] transition-all duration-[1300ms] ease-in'
+              className={`absolute bottom-2 z-10 transition-all ${
+                animStep === 'arrive'
+                  ? 'left-[35%] sm:left-[42%] translate-x-0 duration-[1100ms] ease-out'
+                  : animStep === 'board'
+                  ? 'left-[35%] sm:left-[42%] translate-x-0 duration-300'
+                  : 'left-[35%] sm:left-[42%] translate-x-[450px] sm:translate-x-[600px] duration-[1500ms] ease-in'
               }`}
             >
-              <div className="relative flex items-center">
-                <svg className="h-7 w-16 text-red-600 drop-shadow-md" viewBox="0 0 100 40" fill="none">
-                  <path d="M25 12 L50 12 L65 22 L15 22 Z" fill="#ffffff" />
-                  <path d="M5 22 L75 22 L95 30 L85 35 L10 35 Z" fill="currentColor" />
-                  <path d="M5 30 L90 30 L85 35 L10 35 Z" fill="#0f172a" />
-                </svg>
-
+              <div
+                className={`relative flex items-center transition-transform duration-500 ${
+                  animStep === 'accelerate' ? '-rotate-8 -translate-y-1' : 'rotate-0'
+                }`}
+              >
+                {/* BONEQUINHO STICKMAN PULANDO EM CIMA */}
                 <div
-                  className={`absolute right-[-15px] top-2 flex flex-col gap-1 transition-opacity duration-300 ${
-                    animState === 'step2' || animState === 'step3' ? 'opacity-100' : 'opacity-0'
+                  className={`absolute -top-6 left-6 z-20 transition-all duration-500 ${
+                    animStep === 'arrive'
+                      ? 'opacity-0 -translate-y-4'
+                      : 'opacity-100 translate-y-0 scale-100'
                   }`}
                 >
-                  <div className="h-2 w-12 bg-gradient-to-r from-amber-300 to-transparent rounded-full blur-[1px]" />
-                  <div className="h-2 w-12 bg-gradient-to-r from-amber-300 to-transparent rounded-full blur-[1px]" />
+                  <svg className="h-5 w-4 text-white" viewBox="0 0 20 25" fill="none">
+                    {/* Cabeça */}
+                    <circle cx="10" cy="4" r="3" fill="currentColor" />
+                    {/* Corpo */}
+                    <path d="M10 7 L10 16 M10 10 L5 14 M10 10 L15 14 M10 16 L6 23 M10 16 L14 23" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  </svg>
                 </div>
 
-                {animState === 'step3' && (
-                  <div className="absolute -left-12 bottom-0 h-2 w-12 bg-gradient-to-r from-transparent to-cyan-300 rounded-full blur-[1px] animate-pulse" />
+                {/* VETOR 2D DA LANCHA DE LUXO */}
+                <svg className="h-8 w-20 text-white drop-shadow-md" viewBox="0 0 100 40" fill="none">
+                  {/* Cabine / Parabrisa */}
+                  <path d="M30 18 L48 8 L62 18 Z" fill="#38bdf8" />
+                  {/* Casco Náutico Branco */}
+                  <path d="M5 24 L22 15 L78 15 L98 24 L85 32 L15 32 Z" fill="#ffffff" />
+                  {/* Faixa Ciano Lateral */}
+                  <path d="M18 25 L90 25" stroke="#0284c7" strokeWidth="2.5" strokeLinecap="round" />
+                </svg>
+
+                {/* ESPUMA D'ÁGUA / MAROLA DA PROA E POPA (Aparece ao acelerar) */}
+                {animStep === 'accelerate' && (
+                  <>
+                    {/* Rastro na traseira */}
+                    <div className="absolute -left-12 bottom-0 h-2.5 w-14 bg-gradient-to-r from-transparent via-cyan-200 to-white rounded-full blur-[0.5px] animate-pulse" />
+                    {/* Borrifo na proa */}
+                    <div className="absolute -right-2 bottom-1 h-3 w-3 bg-white/90 rounded-full animate-ping" />
+                  </>
                 )}
               </div>
             </div>
           </div>
         ) : (
           <div className="flex h-full items-center justify-center gap-2">
+            <Send className="h-5 w-5" aria-hidden="true" />
             <span>Solicitar reserva</span>
           </div>
         )}
