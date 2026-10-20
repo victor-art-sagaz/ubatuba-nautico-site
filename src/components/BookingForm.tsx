@@ -171,7 +171,7 @@ export function BookingForm({ preset }: BookingFormProps) {
       aria-describedby="booking-disclaimer"
       className="rounded-3xl border border-navy-100 bg-white p-6 shadow-lift sm:p-8"
     >
-      {/* KEYFRAMES DE MOVIMENTO REALISTA DO STICKMAN E DA LANCHA */}
+      {/* KEYFRAMES CORRIGIDOS DE MOVIMENTO E CAMADAS (Z-INDEX) */}
       <style>{`
         @keyframes boatMove {
           0% { transform: translateX(-160px); }
@@ -185,17 +185,18 @@ export function BookingForm({ preset }: BookingFormProps) {
         }
         @keyframes stickWalkJump {
           0% { transform: translate(0px, 0px); opacity: 1; }
-          32% { transform: translate(68px, 0px); } /* Caminhada firme em cima do pier */
-          48% { transform: translate(105px, -22px); } /* Parábola do Pulo */
-          58% { transform: translate(122px, 12px); } /* Pouso no assento do barco */
-          65% { transform: translate(122px, 12px); }
-          100% { transform: translate(687px, 12px); } /* Acompanha o barco */
+          32% { transform: translate(68px, 0px); } /* Anda sobre a madeira do píer */
+          48% { transform: translate(105px, -24px); } /* Pulo em parábola */
+          58% { transform: translate(122px, 16px); } /* Entra na cabine e senta (atrás do barco) */
+          65% { transform: translate(122px, 16px); }
+          100% { transform: translate(687px, 16px); } /* Acompanha a lancha */
         }
-        /* Movimento das pernas e braços andando */
+        /* Movimento das pernas que PARA (congela) após o pulo */
         @keyframes stickAnimateLimbs {
-          0%, 100% { transform: rotate(0deg); }
-          25% { transform: rotate(20deg); }
-          75% { transform: rotate(-20deg); }
+          0%, 45% { transform: rotate(0deg); }
+          10%, 30% { transform: rotate(20deg); }
+          20%, 40% { transform: rotate(-20deg); }
+          50%, 100% { transform: rotate(0deg); } /* Fica parado sentado no barco */
         }
         @keyframes wakeFoam {
           0%, 65% { opacity: 0; transform: scale(0.5); }
@@ -376,7 +377,7 @@ export function BookingForm({ preset }: BookingFormProps) {
         Enviar este formulário não garante a reserva: {siteConfig.name} confirmará a disponibilidade e o valor final pelo WhatsApp.
       </p>
 
-      {/* BOTÃO ANIMADO MUSA COM PERNAS E BRAÇOS DO STICKMAN EM MOVIMENTO */}
+      {/* BOTÃO ANIMADO MUSA COM ORGANIZAÇÃO RIGOROSA DE Z-INDEX */}
       <button
         type="submit"
         disabled={submitting}
@@ -384,10 +385,10 @@ export function BookingForm({ preset }: BookingFormProps) {
       >
         {submitting ? (
           <div className="relative h-full w-full overflow-hidden bg-[#e2e8f0]">
-            {/* 1. HORIZONTE DA ÁGUA */}
+            {/* 1. HORIZONTE DA ÁGUA (Z-0) */}
             <div className="absolute inset-x-0 bottom-9 z-0 h-[3px] bg-[#0284c7]" />
 
-            {/* 2. TEXTURA DO MAR REALISTA ABAIXO */}
+            {/* 2. TEXTURA DO MAR REALISTA (Z-0) */}
             <div className="absolute inset-x-0 bottom-0 z-0 h-9 bg-[#0e4b75] overflow-hidden">
               <svg className="w-full h-full opacity-60" viewBox="0 0 400 40" preserveAspectRatio="none">
                 <path d="M0 5 Q 50 0, 100 5 T 200 5 T 300 5 T 400 5 L 400 40 L 0 40 Z" fill="#0284c7" />
@@ -397,24 +398,49 @@ export function BookingForm({ preset }: BookingFormProps) {
               </svg>
             </div>
 
-            {/* 3. LANCHA MUSA (FLUTUA NA TONA DA ÁGUA) */}
+            {/* 3. STICKMAN BONECO (Z-15: FICA ATRÁS DO CASCO DO BARCO AO ENTRAR) */}
             <div
-              className="absolute bottom-[16px] z-10"
+              className="absolute bottom-[52px] left-3 z-15"
+              style={{ animation: 'stickWalkJump 4.8s cubic-bezier(0.4, 0, 0.2, 1) forwards' }}
+            >
+              <svg className="h-7 w-5 text-black" viewBox="0 0 20 28" fill="none">
+                <circle cx="10" cy="4" r="3.5" fill="currentColor" />
+                <path d="M10 8 L10 17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                {/* Braços e Pernas congelam o movimento quando entra no barco */}
+                <g style={{ animation: 'stickAnimateLimbs 4.8s cubic-bezier(0.4, 0, 0.2, 1) forwards' }}>
+                  <path d="M10 10 L5 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  <path d="M10 10 L15 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  <path d="M10 17 L5 25" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                  <path d="M10 17 L15 25" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                </g>
+              </svg>
+            </div>
+
+            {/* 4. LANCHA MUSA (Z-20: FICA NA FRENTE DAS PERNAS DO BONECO) */}
+            <div
+              className="absolute bottom-[16px] z-20"
               style={{ animation: 'boatMove 4.8s cubic-bezier(0.4, 0, 0.2, 1) forwards' }}
             >
               <div style={{ animation: 'boatTilt 4.8s ease-in-out forwards' }}>
                 <svg className="h-10 w-32 drop-shadow-md" viewBox="0 0 120 40" fill="none">
+                  {/* Motor de Popa */}
                   <rect x="2" y="12" width="8" height="18" fill="#0f172a" rx="1" />
                   <path d="M4 30 L0 36 L10 36 Z" fill="#020617" />
+
+                  {/* Vidro Ciano MUSA */}
                   <path d="M50 16 L65 8 L80 16 Z" fill="#06b6d4" />
+
+                  {/* Casco Branco (Cobre a parte inferior do boneco) */}
                   <path d="M10 26 L22 14 L95 14 L118 26 L105 34 L18 34 Z" fill="#ffffff" stroke="#94a3b8" strokeWidth="1" />
+                  
+                  {/* Linhas Esportivas MUSA */}
                   <path d="M20 27 L110 27" stroke="#0f172a" strokeWidth="2" />
                   <path d="M25 30 L102 30" stroke="#0891b2" strokeWidth="1.5" />
                 </svg>
 
-                {/* ESPUMA DE ACELERAÇÃO DA POPA */}
+                {/* ESPUMA DE ACELERAÇÃO */}
                 <div
-                  className="absolute -left-12 bottom-1 z-15"
+                  className="absolute -left-12 bottom-1 z-25"
                   style={{ animation: 'wakeFoam 4.8s ease-in-out forwards' }}
                 >
                   <svg className="h-6 w-16 text-white drop-shadow-sm" viewBox="0 0 60 25" fill="currentColor">
@@ -426,33 +452,10 @@ export function BookingForm({ preset }: BookingFormProps) {
               </div>
             </div>
 
-            {/* 4. PÍER FIXO (ALINHADO DE FORMA QUE O STICKMAN ANDE EXATAMENTE EM CIMA) */}
-            <div className="absolute left-0 bottom-8 z-20 flex flex-col items-start">
+            {/* 5. PÍER FIXO (Z-30: POR CIMA DE TUDO NO CANTO ESQUERDO) */}
+            <div className="absolute left-0 bottom-8 z-30 flex flex-col items-start">
               <div className="h-2.5 w-28 bg-[#334155] rounded-r-sm shadow-sm" />
               <div className="ml-20 h-6 w-[6px] bg-[#1e293b]" />
-            </div>
-
-            {/* 5. STICKMAN COM PERNAS E BRAÇOS ARTICULADOS EM MOVIMENTO */}
-            <div
-              className="absolute bottom-[46px] left-3 z-30"
-              style={{ animation: 'stickWalkJump 4.8s cubic-bezier(0.4, 0, 0.2, 1) forwards' }}
-            >
-              <svg className="h-7 w-5 text-black" viewBox="0 0 20 28" fill="none">
-                {/* Cabeça */}
-                <circle cx="10" cy="4" r="3.5" fill="currentColor" />
-                {/* Tronco */}
-                <path d="M10 8 L10 17" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                {/* Braços com rotação de caminhada */}
-                <g style={{ animation: 'stickAnimateLimbs 0.4s infinite alternate ease-in-out' }}>
-                  <path d="M10 10 L5 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                  <path d="M10 10 L15 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                </g>
-                {/* Pernas alternando ao andar */}
-                <g style={{ animation: 'stickAnimateLimbs 0.4s infinite alternate-reverse ease-in-out' }}>
-                  <path d="M10 17 L5 25" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                  <path d="M10 17 L15 25" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                </g>
-              </svg>
             </div>
           </div>
         ) : (
