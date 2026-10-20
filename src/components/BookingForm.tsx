@@ -70,8 +70,6 @@ export function BookingForm({ preset }: BookingFormProps) {
   const [values, setValues] = useState<BookingFormValues>(emptyForm)
   const [errors, setErrors] = useState<FieldErrors>({})
   const [status, setStatus] = useState<Status>('idle')
-  // Passos idênticos ao vídeo: 0 (início), 1 (lancha entra), 2 (stickman anda no pier), 3 (pula), 4 (acelera)
-  const [step, setStep] = useState<number>(0)
   const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null)
 
   useEffect(() => {
@@ -95,7 +93,6 @@ export function BookingForm({ preset }: BookingFormProps) {
     setErrors({})
     setWhatsappUrl(null)
     setStatus('idle')
-    setStep(0)
   }
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -119,12 +116,7 @@ export function BookingForm({ preset }: BookingFormProps) {
 
     setStatus('submitting')
 
-    // Sequência cronometrada frame a frame igual ao vídeo
-    setStep(1) // Lancha entra e atraca
-    setTimeout(() => setStep(2), 1200) // Stickman caminha no pier
-    setTimeout(() => setStep(3), 2200) // Stickman pula
-    setTimeout(() => setStep(4), 3000) // Lancha empina a proa e arranca com ondas
-
+    // Aguarda o término fluido da animação náutica (4.8s) para liberar o resultado
     setTimeout(async () => {
       try {
         const outcome = await submitBooking(validation.payload as any)
@@ -133,7 +125,7 @@ export function BookingForm({ preset }: BookingFormProps) {
       } catch {
         setStatus('error')
       }
-    }, 5200)
+    }, 4800)
   }
 
   const submitting = status === 'submitting'
@@ -180,6 +172,38 @@ export function BookingForm({ preset }: BookingFormProps) {
       aria-describedby="booking-disclaimer"
       className="rounded-3xl border border-navy-100 bg-white p-6 shadow-lift sm:p-8"
     >
+      {/* ESTILOS CSS INLINE DAS ANIMAÇÕES FLUIDAS */}
+      <style>{`
+        @keyframes boatMove {
+          0% { transform: translateX(-160px); }
+          25% { transform: translateX(95px); }
+          65% { transform: translateX(95px); }
+          100% { transform: translateX(650px); }
+        }
+        @keyframes boatTilt {
+          0%, 60% { transform: rotate(0deg); }
+          75%, 100% { transform: rotate(-10deg) translateY(-3px); }
+        }
+        @keyframes stickWalkJump {
+          0% { transform: translate(0px, 0px); opacity: 1; }
+          30% { transform: translate(65px, 0px); } /* Caminhada no pier */
+          45% { transform: translate(110px, -22px); } /* Parábola do pulo */
+          55% { transform: translate(130px, 8px); } /* Aterrissagem no barco */
+          65% { transform: translate(130px, 8px); }
+          100% { transform: translate(680px, 8px); } /* Acompanha o barco */
+        }
+        @keyframes stickLegs {
+          0%, 100% { stroke-dasharray: 4, 4; }
+          50% { stroke-dashoffset: 4; }
+        }
+        @keyframes waveStream {
+          0% { transform: translateX(0); opacity: 0; }
+          60% { opacity: 0; }
+          65% { transform: translateX(0); opacity: 1; }
+          100% { transform: translateX(-120px); opacity: 1; }
+        }
+      `}</style>
+
       {status === 'error' && (
         <div role="alert" className="mb-6 flex items-start gap-3 rounded-2xl bg-red-50 p-4 text-sm text-red-800 ring-1 ring-red-200">
           <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
@@ -352,34 +376,27 @@ export function BookingForm({ preset }: BookingFormProps) {
         Enviar este formulário não garante a reserva: {siteConfig.name} confirmará a disponibilidade e o valor final pelo WhatsApp.
       </p>
 
-      {/* BOTÃO COM ANIMAÇÃO NÁUTICA VETORIAL FIEL AO VÍDEO DE REFERÊNCIA */}
+      {/* BOTÃO COM AMBIENTE NÁUTICO MUSA E ANIMAÇÃO FÍSICA FLUIDA */}
       <button
         type="submit"
         disabled={submitting}
-        className="relative mt-6 h-20 w-full overflow-hidden rounded-2xl bg-[#f3f4f6] font-semibold text-navy-950 shadow-md transition-all duration-300 hover:bg-[#e5e7eb] active:scale-[0.99] disabled:cursor-not-allowed"
+        className="relative mt-6 h-20 w-full overflow-hidden rounded-2xl bg-[#e2e8f0] font-semibold text-navy-950 shadow-md transition-all duration-300 hover:bg-[#cbd5e1] active:scale-[0.99] disabled:cursor-not-allowed"
       >
         {submitting ? (
-          <div className="relative h-full w-full overflow-hidden bg-[#f3f4f6]">
-            {/* MAR COMPLETO PREENCHIDO EM AZUL ABAIXO DA LINHA D'ÁGUA */}
-            <div className="absolute inset-x-0 bottom-0 h-8 bg-[#0284c7] border-t-2 border-[#38bdf8]" />
+          <div className="relative h-full w-full overflow-hidden bg-[#e2e8f0]">
+            {/* MAR COMPLETO EM VERDE-ÁGUA/CIANO DO SITE MUSA */}
+            <div className="absolute inset-x-0 bottom-0 h-8 bg-[#0891b2] border-t-2 border-[#22d3ee]" />
 
-            {/* PÍER FIXO NO CANTO ESQUERDO */}
+            {/* PÍER / TRAPICHE DO LADO ESQUERDO */}
             <div className="absolute left-0 bottom-8 z-10 flex flex-col items-start">
-              <div className="h-2 w-28 bg-[#4b5563] rounded-r-sm shadow-sm" />
-              <div className="ml-20 h-6 w-[6px] bg-[#374151]" />
+              <div className="h-2 w-28 bg-[#334155] rounded-r-sm shadow-sm" />
+              <div className="ml-20 h-6 w-[6px] bg-[#1e293b]" />
             </div>
 
-            {/* STICKMAN BONECO (Entra -> Anda no pier -> Pula na lancha -> Acelera junto) */}
+            {/* BONECO STICKMAN (COM ANIMAÇÃO DE CAMINHADA, PULO E ATERRISSAGEM) */}
             <div
-              className={`absolute z-30 transition-all ${
-                step === 1
-                  ? 'bottom-[38px] left-3 opacity-100'
-                  : step === 2
-                  ? 'bottom-[38px] left-20 opacity-100 duration-700 ease-linear'
-                  : step === 3
-                  ? 'bottom-[48px] left-32 opacity-100 duration-300 ease-out'
-                  : 'bottom-[28px] left-[140px] opacity-100 transition-none'
-              } ${step === 4 ? 'translate-x-[500px] sm:translate-x-[700px] duration-[1600ms] ease-in' : ''}`}
+              className="absolute bottom-[35px] left-3 z-30"
+              style={{ animation: 'stickWalkJump 4.8s cubic-bezier(0.4, 0, 0.2, 1) forwards' }}
             >
               <svg className="h-7 w-5 text-black" viewBox="0 0 20 28" fill="none">
                 <circle cx="10" cy="5" r="3.5" fill="currentColor" />
@@ -387,46 +404,36 @@ export function BookingForm({ preset }: BookingFormProps) {
               </svg>
             </div>
 
-            {/* ONDAS TRIANGULARES BRANCAS E AZUIS (Geradas quando arranca) */}
-            {step === 4 && (
-              <div className="absolute left-28 bottom-[28px] z-10 flex items-end gap-1 animate-pulse">
-                <svg className="h-5 w-40 text-[#0284c7]" viewBox="0 0 140 20" fill="currentColor">
-                  <polygon points="0,20 15,5 25,20 40,3 55,20 70,2 85,20 100,0 100,20 120,3 140,20" fill="#ffffff" stroke="#0284c7" strokeWidth="1" />
-                </svg>
-              </div>
-            )}
-
-            {/* LANCHA (Entra deslizando -> Atraca -> Empina a proa e arranca) */}
+            {/* ONDAS E MAROLA DINÂMICA NA ÁGUA */}
             <div
-              className={`absolute bottom-[18px] z-20 transition-all ${
-                step === 1
-                  ? 'left-24 duration-[1000ms] ease-out'
-                  : step === 2 || step === 3
-                  ? 'left-24'
-                  : '-left-40 duration-0'
-              } ${
-                step === 4
-                  ? 'left-24 translate-x-[500px] sm:translate-x-[700px] duration-[1600ms] ease-in'
-                  : ''
-              }`}
+              className="absolute left-32 bottom-[26px] z-10"
+              style={{ animation: 'waveStream 4.8s ease-in-out forwards' }}
             >
-              <div
-                className={`relative flex items-center transition-transform duration-500 ${
-                  step === 4 ? '-rotate-12 -translate-y-2' : 'rotate-0'
-                }`}
-              >
-                <svg className="h-10 w-32 text-white drop-shadow-sm" viewBox="0 0 120 40" fill="none">
-                  {/* Motor de Popa */}
-                  <rect x="2" y="12" width="8" height="18" fill="#1f2937" rx="1" />
-                  <path d="M4 30 L0 36 L10 36 Z" fill="#111827" />
+              <svg className="h-5 w-40 text-[#22d3ee]" viewBox="0 0 140 20" fill="currentColor">
+                <polygon points="0,20 15,5 25,20 40,3 55,20 70,2 85,20 100,0 100,20 120,3 140,20" fill="#ffffff" stroke="#0891b2" strokeWidth="1" />
+              </svg>
+            </div>
 
-                  {/* Vidro Laranja */}
-                  <path d="M50 16 L65 8 L80 16 Z" fill="#f97316" />
+            {/* LANCHA MUSA (NAS CORES BRANCA, PRETA E VERDE-ÁGUA/CIANO) */}
+            <div
+              className="absolute bottom-[18px] z-20"
+              style={{ animation: 'boatMove 4.8s cubic-bezier(0.4, 0, 0.2, 1) forwards' }}
+            >
+              <div style={{ animation: 'boatTilt 4.8s ease-in-out forwards' }}>
+                <svg className="h-10 w-32 drop-shadow-md" viewBox="0 0 120 40" fill="none">
+                  {/* Motor de Popa Preto Náutico */}
+                  <rect x="2" y="12" width="8" height="18" fill="#0f172a" rx="1" />
+                  <path d="M4 30 L0 36 L10 36 Z" fill="#020617" />
 
-                  {/* Casco Branco */}
-                  <path d="M10 26 L22 14 L95 14 L118 26 L105 34 L18 34 Z" fill="#ffffff" stroke="#d1d5db" strokeWidth="1" />
-                  {/* Linha Lateral */}
-                  <path d="M20 27 L110 27" stroke="#374151" strokeWidth="1.5" />
+                  {/* Vidro do Parabrisa Verde-Água / Ciano Musa */}
+                  <path d="M50 16 L65 8 L80 16 Z" fill="#06b6d4" />
+
+                  {/* Casco Branco com Linhas Esportivas */}
+                  <path d="M10 26 L22 14 L95 14 L118 26 L105 34 L18 34 Z" fill="#ffffff" stroke="#94a3b8" strokeWidth="1" />
+                  
+                  {/* Detalhes Esportivos do Casco nas Cores MUSA (Preto e Ciano) */}
+                  <path d="M20 27 L110 27" stroke="#0f172a" strokeWidth="2" />
+                  <path d="M25 30 L102 30" stroke="#0891b2" strokeWidth="1.5" />
                 </svg>
               </div>
             </div>
