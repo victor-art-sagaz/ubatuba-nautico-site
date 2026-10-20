@@ -1,5 +1,5 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react'
-import { AlertTriangle, CheckCircle2, Info, Loader2, Send } from 'lucide-react'
+import { AlertTriangle, CheckCircle2, Info, Send, Ship } from 'lucide-react'
 import type { BookingFormValues, BookingPayload } from '@/types'
 import { rentals, tours } from '@/data/experiences'
 import { emptyForm, maxDateISO, periodOptions, todayISO, validateBooking, type FieldErrors } from '@/lib/validation'
@@ -121,14 +121,18 @@ export function BookingForm({ preset }: BookingFormProps) {
     }
 
     setStatus('submitting')
-    try {
-      const outcome = await submitBooking(validation.payload)
-      setPayload(validation.payload)
-      setResult(outcome)
-      setStatus(outcome.whatsappUrl ? 'ready' : 'unconfigured')
-    } catch {
-      setStatus('error')
-    }
+
+    // Aguarda a animação da lancha navegando por 2.2s antes de liberar o status
+    setTimeout(async () => {
+      try {
+        const outcome = await submitBooking(validation.payload as any)
+        setPayload(validation.payload)
+        setResult(outcome)
+        setStatus(outcome.whatsappUrl ? 'ready' : 'unconfigured')
+      } catch {
+        setStatus('error')
+      }
+    }, 2200)
   }
 
   const submitting = status === 'submitting'
@@ -137,9 +141,9 @@ export function BookingForm({ preset }: BookingFormProps) {
     return (
       <div role="status" className="rounded-3xl border border-sea-200 bg-sea-50 p-6 sm:p-8">
         <CheckCircle2 className="h-10 w-10 text-sea-600" aria-hidden="true" />
-        <h3 className="mt-4 text-2xl font-semibold">Solicitação preparada</h3>
+        <h3 className="mt-4 text-2xl font-semibold">Solicitação preparada!</h3>
         <p className="mt-2 leading-relaxed text-navy-700">
-          Sua mensagem está pronta. Toque no botão abaixo para enviá-la pelo WhatsApp. A reserva só é confirmada
+          Sua mensagem foi gerada. Toque no botão abaixo para enviá-la pelo WhatsApp. A reserva só é confirmada
           depois da resposta da nossa equipe, que verificará a disponibilidade.
         </p>
         {result.saved && (
@@ -363,7 +367,7 @@ export function BookingForm({ preset }: BookingFormProps) {
           </Field>
         </div>
 
-        {/* Campo isca contra robôs: fora da tela e ignorado por leitores de tela. */}
+        {/* Campo isca contra robôs */}
         <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
           <label htmlFor="field-website">Não preencha este campo</label>
           <input
@@ -380,23 +384,42 @@ export function BookingForm({ preset }: BookingFormProps) {
 
       <p id="booking-disclaimer" className="mt-6 text-xs leading-relaxed text-navy-500">
         Enviar este formulário não garante a reserva: {siteConfig.name} confirmará a disponibilidade, o valor final e as
-        condições pelo WhatsApp. Seus dados serão usados apenas para atender a esta solicitação (veja a Política de
-        Privacidade).
+        condições pelo WhatsApp. Seus dados serão usados apenas para atender a esta solicitação.
       </p>
 
-      <Button type="submit" size="lg" className="mt-6 w-full" disabled={submitting}>
-        {submitting ? (
-          <>
-            <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
-            Preparando solicitação…
-          </>
-        ) : (
-          <>
-            <Send className="h-5 w-5" aria-hidden="true" />
-            Solicitar reserva
-          </>
+      {/* BOTÃO COM ANIMAÇÃO NÁUTICA DA LANCHA */}
+      <button
+        type="submit"
+        disabled={submitting}
+        className="relative mt-6 w-full overflow-hidden rounded-2xl bg-cyan-600 py-4 px-6 font-semibold text-white shadow-md transition-all duration-300 hover:bg-cyan-500 hover:shadow-cyan-500/25 active:scale-[0.99] disabled:cursor-not-allowed"
+      >
+        {/* ONDAS E RASTRO */}
+        {submitting && (
+          <div className="absolute inset-0 flex items-center justify-center bg-cyan-700">
+            <div className="absolute inset-0 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:16px_16px] opacity-30 animate-pulse" />
+            <span className="z-10 text-xs uppercase tracking-widest text-cyan-100 font-bold animate-pulse">
+              A preparar o seu embarque...
+            </span>
+          </div>
         )}
-      </Button>
+
+        {/* ANIMACÃO DA LANCHA DESLIZANDO */}
+        {submitting && (
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 transition-all duration-[2100ms] ease-in-out translate-x-[260px] sm:translate-x-[420px]">
+            <div className="relative flex items-center">
+              <Ship className="h-7 w-7 text-white -rotate-6 transition-transform" />
+              <div className="h-1 w-12 bg-gradient-to-l from-white/80 to-transparent rounded-full -ml-1 blur-[1px]" />
+            </div>
+          </div>
+        )}
+
+        {/* CONTEÚDO PADRÃO */}
+        <div className={`flex items-center justify-center gap-2 transition-opacity duration-300 ${submitting ? 'opacity-0' : 'opacity-100'}`}>
+          <Send className="h-5 w-5" aria-hidden="true" />
+          <span>Solicitar reserva</span>
+        </div>
+      </button>
     </form>
   )
 }
+
