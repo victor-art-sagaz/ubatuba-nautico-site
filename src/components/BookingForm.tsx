@@ -116,7 +116,6 @@ export function BookingForm({ preset }: BookingFormProps) {
 
     setStatus('submitting')
 
-    // Aguarda o término fluido da animação náutica (4.8s) para liberar o resultado
     setTimeout(async () => {
       try {
         const outcome = await submitBooking(validation.payload as any)
@@ -172,35 +171,30 @@ export function BookingForm({ preset }: BookingFormProps) {
       aria-describedby="booking-disclaimer"
       className="rounded-3xl border border-navy-100 bg-white p-6 shadow-lift sm:p-8"
     >
-      {/* ESTILOS CSS INLINE DAS ANIMAÇÕES FLUIDAS */}
+      {/* KEYFRAMES CSS ALINHADOS PERFEITAMENTE SOBRE A ÁGUA */}
       <style>{`
         @keyframes boatMove {
           0% { transform: translateX(-160px); }
-          25% { transform: translateX(95px); }
-          65% { transform: translateX(95px); }
+          25% { transform: translateX(90px); }
+          65% { transform: translateX(90px); }
           100% { transform: translateX(650px); }
         }
         @keyframes boatTilt {
-          0%, 60% { transform: rotate(0deg); }
-          75%, 100% { transform: rotate(-10deg) translateY(-3px); }
+          0%, 65% { transform: rotate(0deg); }
+          78%, 100% { transform: rotate(-10deg) translateY(-2px); }
         }
         @keyframes stickWalkJump {
           0% { transform: translate(0px, 0px); opacity: 1; }
-          30% { transform: translate(65px, 0px); } /* Caminhada no pier */
-          45% { transform: translate(110px, -22px); } /* Parábola do pulo */
-          55% { transform: translate(130px, 8px); } /* Aterrissagem no barco */
-          65% { transform: translate(130px, 8px); }
-          100% { transform: translate(680px, 8px); } /* Acompanha o barco */
-        }
-        @keyframes stickLegs {
-          0%, 100% { stroke-dasharray: 4, 4; }
-          50% { stroke-dashoffset: 4; }
+          30% { transform: translate(70px, 0px); }
+          45% { transform: translate(110px, -18px); }
+          58% { transform: translate(128px, 6px); }
+          65% { transform: translate(128px, 6px); }
+          100% { transform: translate(688px, 6px); }
         }
         @keyframes waveStream {
-          0% { transform: translateX(0); opacity: 0; }
-          60% { opacity: 0; }
-          65% { transform: translateX(0); opacity: 1; }
-          100% { transform: translateX(-120px); opacity: 1; }
+          0%, 60% { opacity: 0; transform: translateX(0); }
+          68% { opacity: 1; transform: translateX(0); }
+          100% { opacity: 1; transform: translateX(-140px); }
         }
       `}</style>
 
@@ -376,7 +370,7 @@ export function BookingForm({ preset }: BookingFormProps) {
         Enviar este formulário não garante a reserva: {siteConfig.name} confirmará a disponibilidade e o valor final pelo WhatsApp.
       </p>
 
-      {/* BOTÃO COM AMBIENTE NÁUTICO MUSA E ANIMAÇÃO FÍSICA FLUIDA */}
+      {/* BOTÃO ANIMADO NÁUTICO MUSA COM CAMADAS DE Z-INDEX CORRETAS */}
       <button
         type="submit"
         disabled={submitting}
@@ -384,29 +378,12 @@ export function BookingForm({ preset }: BookingFormProps) {
       >
         {submitting ? (
           <div className="relative h-full w-full overflow-hidden bg-[#e2e8f0]">
-            {/* MAR COMPLETO EM VERDE-ÁGUA/CIANO DO SITE MUSA */}
-            <div className="absolute inset-x-0 bottom-0 h-8 bg-[#0891b2] border-t-2 border-[#22d3ee]" />
+            {/* MAR COMPLETO EM AZUL/VERDE-ÁGUA DO SITE (FUNDO Z-0) */}
+            <div className="absolute inset-x-0 bottom-0 z-0 h-6 bg-[#0891b2] border-t-2 border-[#22d3ee]" />
 
-            {/* PÍER / TRAPICHE DO LADO ESQUERDO */}
-            <div className="absolute left-0 bottom-8 z-10 flex flex-col items-start">
-              <div className="h-2 w-28 bg-[#334155] rounded-r-sm shadow-sm" />
-              <div className="ml-20 h-6 w-[6px] bg-[#1e293b]" />
-            </div>
-
-            {/* BONECO STICKMAN (COM ANIMAÇÃO DE CAMINHADA, PULO E ATERRISSAGEM) */}
+            {/* ONDAS NA ÁGUA (Z-10) */}
             <div
-              className="absolute bottom-[35px] left-3 z-30"
-              style={{ animation: 'stickWalkJump 4.8s cubic-bezier(0.4, 0, 0.2, 1) forwards' }}
-            >
-              <svg className="h-7 w-5 text-black" viewBox="0 0 20 28" fill="none">
-                <circle cx="10" cy="5" r="3.5" fill="currentColor" />
-                <path d="M10 9 L10 18 M10 12 L4 16 M10 12 L16 16 M10 18 L5 26 M10 18 L15 26" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-              </svg>
-            </div>
-
-            {/* ONDAS E MAROLA DINÂMICA NA ÁGUA */}
-            <div
-              className="absolute left-32 bottom-[26px] z-10"
+              className="absolute left-32 bottom-[20px] z-10"
               style={{ animation: 'waveStream 4.8s ease-in-out forwards' }}
             >
               <svg className="h-5 w-40 text-[#22d3ee]" viewBox="0 0 140 20" fill="currentColor">
@@ -414,9 +391,9 @@ export function BookingForm({ preset }: BookingFormProps) {
               </svg>
             </div>
 
-            {/* LANCHA MUSA (NAS CORES BRANCA, PRETA E VERDE-ÁGUA/CIANO) */}
+            {/* LANCHA MUSA FLUTUANDO EXATAMENTE SOBRE A LINHA DE ÁGUA (Z-20) */}
             <div
-              className="absolute bottom-[18px] z-20"
+              className="absolute bottom-[10px] z-20"
               style={{ animation: 'boatMove 4.8s cubic-bezier(0.4, 0, 0.2, 1) forwards' }}
             >
               <div style={{ animation: 'boatTilt 4.8s ease-in-out forwards' }}>
@@ -425,17 +402,34 @@ export function BookingForm({ preset }: BookingFormProps) {
                   <rect x="2" y="12" width="8" height="18" fill="#0f172a" rx="1" />
                   <path d="M4 30 L0 36 L10 36 Z" fill="#020617" />
 
-                  {/* Vidro do Parabrisa Verde-Água / Ciano Musa */}
+                  {/* Vidro do Parabrisa Ciano MUSA */}
                   <path d="M50 16 L65 8 L80 16 Z" fill="#06b6d4" />
 
-                  {/* Casco Branco com Linhas Esportivas */}
+                  {/* Casco Branco */}
                   <path d="M10 26 L22 14 L95 14 L118 26 L105 34 L18 34 Z" fill="#ffffff" stroke="#94a3b8" strokeWidth="1" />
                   
-                  {/* Detalhes Esportivos do Casco nas Cores MUSA (Preto e Ciano) */}
+                  {/* Detalhes Esportivos do Casco nas Cores MUSA */}
                   <path d="M20 27 L110 27" stroke="#0f172a" strokeWidth="2" />
                   <path d="M25 30 L102 30" stroke="#0891b2" strokeWidth="1.5" />
                 </svg>
               </div>
+            </div>
+
+            {/* PÍER / TRAPICHE SOBRE A ÁGUA (Z-30) */}
+            <div className="absolute left-0 bottom-6 z-30 flex flex-col items-start">
+              <div className="h-2 w-28 bg-[#334155] rounded-r-sm shadow-sm" />
+              <div className="ml-20 h-6 w-[6px] bg-[#1e293b]" />
+            </div>
+
+            {/* STICKMAN BONECO POR CIMA DO PÍER E DA LANCHA (Z-40) */}
+            <div
+              className="absolute bottom-[30px] left-3 z-40"
+              style={{ animation: 'stickWalkJump 4.8s cubic-bezier(0.4, 0, 0.2, 1) forwards' }}
+            >
+              <svg className="h-7 w-5 text-black" viewBox="0 0 20 28" fill="none">
+                <circle cx="10" cy="5" r="3.5" fill="currentColor" />
+                <path d="M10 9 L10 18 M10 12 L4 16 M10 12 L16 16 M10 18 L5 26 M10 18 L15 26" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+              </svg>
             </div>
           </div>
         ) : (
