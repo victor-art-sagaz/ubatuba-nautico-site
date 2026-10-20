@@ -70,8 +70,8 @@ export function BookingForm({ preset }: BookingFormProps) {
   const [values, setValues] = useState<BookingFormValues>(emptyForm)
   const [errors, setErrors] = useState<FieldErrors>({})
   const [status, setStatus] = useState<Status>('idle')
-  // Passos fiéis ao vídeo de referência: 'enter' (lancha entra) -> 'dock' (para no pier) -> 'walk' (stickman anda) -> 'jump' (pula na lancha) -> 'accelerate' (arranca com ondas)
-  const [animStep, setAnimStep] = useState<'idle' | 'enter' | 'dock' | 'walk' | 'jump' | 'accelerate'>('idle')
+  // Passos idênticos ao vídeo: 0 (início), 1 (lancha entra), 2 (stickman anda no pier), 3 (pula), 4 (acelera)
+  const [step, setStep] = useState<number>(0)
   const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null)
 
   useEffect(() => {
@@ -95,7 +95,7 @@ export function BookingForm({ preset }: BookingFormProps) {
     setErrors({})
     setWhatsappUrl(null)
     setStatus('idle')
-    setAnimStep('idle')
+    setStep(0)
   }
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -119,30 +119,12 @@ export function BookingForm({ preset }: BookingFormProps) {
 
     setStatus('submitting')
 
-    // 1. Lancha entra deslizando da esquerda até o píer (0s - 1.2s)
-    setAnimStep('enter')
+    // Sequência cronometrada frame a frame igual ao vídeo
+    setStep(1) // Lancha entra e atraca
+    setTimeout(() => setStep(2), 1200) // Stickman caminha no pier
+    setTimeout(() => setStep(3), 2200) // Stickman pula
+    setTimeout(() => setStep(4), 3000) // Lancha empina a proa e arranca com ondas
 
-    // 2. Lancha atracada no píer (1.2s - 2.0s)
-    setTimeout(() => {
-      setAnimStep('dock')
-    }, 1200)
-
-    // 3. Stickman caminha sobre a plataforma do píer (2.0s - 2.8s)
-    setTimeout(() => {
-      setAnimStep('walk')
-    }, 2000)
-
-    // 4. Stickman dá o pulo para dentro da lancha (2.8s - 3.5s)
-    setTimeout(() => {
-      setAnimStep('jump')
-    }, 2800)
-
-    // 5. Lancha inclina a proa para cima e arranca acelerando com marola (3.5s - 5.5s)
-    setTimeout(() => {
-      setAnimStep('accelerate')
-    }, 3500)
-
-    // Conclusão e liberação do link do WhatsApp
     setTimeout(async () => {
       try {
         const outcome = await submitBooking(validation.payload as any)
@@ -151,7 +133,7 @@ export function BookingForm({ preset }: BookingFormProps) {
       } catch {
         setStatus('error')
       }
-    }, 5500)
+    }, 5200)
   }
 
   const submitting = status === 'submitting'
@@ -370,34 +352,34 @@ export function BookingForm({ preset }: BookingFormProps) {
         Enviar este formulário não garante a reserva: {siteConfig.name} confirmará a disponibilidade e o valor final pelo WhatsApp.
       </p>
 
-      {/* BOTÃO ANIMADO NÁUTICO 2D (IGUAL AO VÍDEO RESTRITO AO CONTAINER DO BOTÃO) */}
+      {/* BOTÃO COM ANIMAÇÃO NÁUTICA VETORIAL FIEL AO VÍDEO DE REFERÊNCIA */}
       <button
         type="submit"
         disabled={submitting}
-        className="relative mt-6 h-20 w-full overflow-hidden rounded-2xl bg-[#e5e7eb] font-semibold text-navy-950 shadow-md transition-all duration-300 hover:bg-[#d1d5db] active:scale-[0.99] disabled:cursor-not-allowed"
+        className="relative mt-6 h-20 w-full overflow-hidden rounded-2xl bg-[#f3f4f6] font-semibold text-navy-950 shadow-md transition-all duration-300 hover:bg-[#e5e7eb] active:scale-[0.99] disabled:cursor-not-allowed"
       >
         {submitting ? (
-          <div className="relative h-full w-full overflow-hidden bg-[#e5e7eb]">
-            {/* TODO O MAR PREENCHIDO EM AZUL ABAIXO DA LINHA D'ÁGUA */}
+          <div className="relative h-full w-full overflow-hidden bg-[#f3f4f6]">
+            {/* MAR COMPLETO PREENCHIDO EM AZUL ABAIXO DA LINHA D'ÁGUA */}
             <div className="absolute inset-x-0 bottom-0 h-8 bg-[#0284c7] border-t-2 border-[#38bdf8]" />
 
-            {/* PÍER / TRAPICHE FIXO NO CANTO ESQUERDO */}
+            {/* PÍER FIXO NO CANTO ESQUERDO */}
             <div className="absolute left-0 bottom-8 z-10 flex flex-col items-start">
-              <div className="h-[7px] w-28 bg-[#4b5563] rounded-r-sm shadow-sm" />
-              <div className="ml-20 h-7 w-[6px] bg-[#374151]" />
+              <div className="h-2 w-28 bg-[#4b5563] rounded-r-sm shadow-sm" />
+              <div className="ml-20 h-6 w-[6px] bg-[#374151]" />
             </div>
 
-            {/* BONECO STICKMAN (Caminha no Píer -> Pula na Lancha) */}
+            {/* STICKMAN BONECO (Entra -> Anda no pier -> Pula na lancha -> Acelera junto) */}
             <div
               className={`absolute z-30 transition-all ${
-                animStep === 'enter' || animStep === 'dock'
-                  ? 'bottom-[35px] left-3 opacity-100'
-                  : animStep === 'walk'
-                  ? 'bottom-[35px] left-20 opacity-100 duration-700 ease-linear'
-                  : animStep === 'jump'
-                  ? 'bottom-[44px] left-32 opacity-100 duration-300 ease-out'
-                  : 'bottom-[28px] left-[142px] opacity-100 transition-none'
-              } ${animStep === 'accelerate' ? 'translate-x-[480px] sm:translate-x-[680px] duration-[1600ms] ease-in' : ''}`}
+                step === 1
+                  ? 'bottom-[38px] left-3 opacity-100'
+                  : step === 2
+                  ? 'bottom-[38px] left-20 opacity-100 duration-700 ease-linear'
+                  : step === 3
+                  ? 'bottom-[48px] left-32 opacity-100 duration-300 ease-out'
+                  : 'bottom-[28px] left-[140px] opacity-100 transition-none'
+              } ${step === 4 ? 'translate-x-[500px] sm:translate-x-[700px] duration-[1600ms] ease-in' : ''}`}
             >
               <svg className="h-7 w-5 text-black" viewBox="0 0 20 28" fill="none">
                 <circle cx="10" cy="5" r="3.5" fill="currentColor" />
@@ -405,32 +387,32 @@ export function BookingForm({ preset }: BookingFormProps) {
               </svg>
             </div>
 
-            {/* ONDAS DE MAROLA NA ACELERAÇÃO (Vetor idêntico ao vídeo) */}
-            {animStep === 'accelerate' && (
+            {/* ONDAS TRIANGULARES BRANCAS E AZUIS (Geradas quando arranca) */}
+            {step === 4 && (
               <div className="absolute left-28 bottom-[28px] z-10 flex items-end gap-1 animate-pulse">
-                <svg className="h-5 w-36 text-[#0284c7]" viewBox="0 0 120 20" fill="currentColor">
-                  <polygon points="0,20 15,5 25,20 40,3 55,20 70,2 85,20 100,0 100,20 120,5 120,20" fill="#ffffff" stroke="#0284c7" strokeWidth="1" />
+                <svg className="h-5 w-40 text-[#0284c7]" viewBox="0 0 140 20" fill="currentColor">
+                  <polygon points="0,20 15,5 25,20 40,3 55,20 70,2 85,20 100,0 100,20 120,3 140,20" fill="#ffffff" stroke="#0284c7" strokeWidth="1" />
                 </svg>
               </div>
             )}
 
-            {/* LANCHA (Entra do lado esquerdo -> Atraca no Píer -> Arranca com a proa inclinada) */}
+            {/* LANCHA (Entra deslizando -> Atraca -> Empina a proa e arranca) */}
             <div
-              className={`absolute bottom-[20px] z-20 transition-all ${
-                animStep === 'enter'
-                  ? '-left-36 duration-0'
-                  : animStep === 'dock' || animStep === 'walk' || animStep === 'jump'
-                  ? 'left-24 duration-[1100ms] ease-out'
-                  : 'left-24'
+              className={`absolute bottom-[18px] z-20 transition-all ${
+                step === 1
+                  ? 'left-24 duration-[1000ms] ease-out'
+                  : step === 2 || step === 3
+                  ? 'left-24'
+                  : '-left-40 duration-0'
               } ${
-                animStep === 'accelerate'
-                  ? 'translate-x-[480px] sm:translate-x-[680px] duration-[1600ms] ease-in'
+                step === 4
+                  ? 'left-24 translate-x-[500px] sm:translate-x-[700px] duration-[1600ms] ease-in'
                   : ''
               }`}
             >
               <div
                 className={`relative flex items-center transition-transform duration-500 ${
-                  animStep === 'accelerate' ? '-rotate-12 -translate-y-2' : 'rotate-0'
+                  step === 4 ? '-rotate-12 -translate-y-2' : 'rotate-0'
                 }`}
               >
                 <svg className="h-10 w-32 text-white drop-shadow-sm" viewBox="0 0 120 40" fill="none">
