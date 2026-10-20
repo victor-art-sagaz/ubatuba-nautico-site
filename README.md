@@ -1,4 +1,4 @@
-# Site de passeios náuticos em Ubatuba-SP (modelo demonstrativo)
+# MUSA Turismo Náutico | Ubatuba-SP (modelo demonstrativo)
 
 Site profissional para empresa de passeios de lancha e barco em Ubatuba, feito com **React + Vite + TypeScript + Tailwind CSS + React Router**, pronto para publicar na **Netlify** e preparado para evoluir com **Firebase Firestore**.
 

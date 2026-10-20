@@ -1,124 +1,66 @@
 import type { Experience } from '@/types'
 
-/**
- * CONTEÚDO DEMONSTRATIVO: nomes, roteiros, durações, capacidades e preços abaixo
- * são exemplos para apresentação. Substitua pelos dados reais da empresa.
- * Não representam roteiros oficiais, preços praticados nem capacidade autorizada.
- */
-
+/** Dados comerciais informados pela empresa. Valores exibidos como preço inicial. */
 export const tours: Experience[] = [
-  {
-    id: 'passeio-ilhas',
-    kind: 'passeio',
-    name: 'Passeio pelas ilhas',
-    description:
-      'Roteiro de exemplo com navegação pela costa e paradas para banho em águas claras, conforme condições do mar.',
-    duration: '4 horas (exemplo)',
-    capacity: 'Até 10 passageiros (exemplo)',
-    amenities: ['Som ambiente', 'Área coberta', 'Banheiro a bordo'],
-    price: 'R$ 180',
-    priceUnit: 'por pessoa',
-    included: ['Comandante e marinheiro', 'Coletes salva-vidas', 'Água mineral'],
-    notIncluded: ['Alimentação', 'Bebidas alcoólicas'],
-    stops: ['Ilha das Couves', 'Ilha do Prumirim'],
-    image: 'ilha',
-  },
-  {
-    id: 'passeio-praias',
-    kind: 'passeio',
-    name: 'Praias e águas calmas',
-    description:
-      'Passeio de exemplo para quem quer conhecer praias de difícil acesso por terra, com tempo livre para banho.',
-    duration: '3 horas (exemplo)',
-    capacity: 'Até 10 passageiros (exemplo)',
-    amenities: ['Som ambiente', 'Área coberta'],
-    price: 'R$ 140',
-    priceUnit: 'por pessoa',
-    included: ['Comandante e marinheiro', 'Coletes salva-vidas', 'Água mineral'],
-    notIncluded: ['Alimentação'],
-    stops: ['Praias da região (a definir com a empresa)'],
-    image: 'praia',
-  },
-  {
-    id: 'passeio-pordosol',
-    kind: 'passeio',
-    name: 'Pôr do sol a bordo',
-    description:
-      'Saída no fim da tarde para apreciar o entardecer no mar. Horários variam conforme a estação do ano.',
-    duration: '2 horas (exemplo)',
-    capacity: 'Até 8 passageiros (exemplo)',
-    amenities: ['Som ambiente', 'Área de convivência'],
-    price: 'R$ 160',
-    priceUnit: 'por pessoa',
-    included: ['Comandante e marinheiro', 'Coletes salva-vidas', 'Água mineral'],
-    notIncluded: ['Bebidas e petiscos'],
-    stops: ['Navegação panorâmica pela baía'],
-    image: 'pordosol',
-  },
-  {
-    id: 'passeio-mergulho',
-    kind: 'passeio',
-    name: 'Mergulho livre e relax',
-    description:
-      'Parada em ponto de águas transparentes para mergulho livre, sujeita a condições de mar e visibilidade.',
-    duration: '4 horas (exemplo)',
-    capacity: 'Até 8 passageiros (exemplo)',
-    amenities: ['Área coberta', 'Escada de acesso ao mar'],
-    price: 'R$ 200',
-    priceUnit: 'por pessoa',
-    included: ['Comandante e marinheiro', 'Coletes salva-vidas', 'Equipamento de snorkel (se disponível)'],
-    notIncluded: ['Alimentação'],
-    stops: ['Ponto de mergulho (a definir com a empresa)'],
-    image: 'mergulho',
-  },
+{
+    id: 'compartilhado', kind: 'passeio', name: 'Passeio compartilhado',
+    description: 'Uma opção para conhecer as ilhas de Ubatuba dividindo o passeio com outros passageiros.',
+    duration: '6 horas', capacity: 'Consulte a disponibilidade',
+    amenities: ['Passeio em grupo', 'Contato com a natureza'],
+    price: 'R$ 250,00', priceUnit: 'por pessoa',
+    included: ['Passeio compartilhado'], notIncluded: ['Confirme os itens incluídos ao reservar'],
+    stops: ['Ilha das Couves', 'Ilha do Prumirim'], image: 'ilha',
+  }
 ]
 
 export const rentals: Experience[] = [
-  {
-    id: 'aluguel-lancha-hora',
-    kind: 'aluguel',
-    name: 'Lancha privativa por hora',
-    description:
-      'Embarcação exclusiva para o seu grupo, com roteiro combinado diretamente com o comandante.',
-    duration: 'A partir de 2 horas (exemplo)',
-    capacity: 'Até 8 passageiros (exemplo)',
-    amenities: ['Som', 'Área de sol', 'Banheiro a bordo'],
-    price: 'R$ 700',
-    priceUnit: 'por hora',
-    included: ['Comandante e marinheiro', 'Coletes salva-vidas', 'Combustível conforme roteiro combinado'],
-    notIncluded: ['Alimentação e bebidas'],
-    image: 'lancha',
+{
+    id: 'musa-ii', kind: 'aluguel', name: 'Musa II',
+    description: 'Lancha espaçosa com sala e cozinha integradas, 3 quartos, 2 banheiros e flybridge.',
+    duration: '7 horas', capacity: 'Até 16 pessoas',
+    amenities: ['Churrasqueira', 'Cooler', 'Espaguetes flutuantes', 'Flybridge'],
+    price: 'R$ 5.500,00', priceUnit: 'por passeio',
+    included: ['Passeio privativo', 'Roteiro conforme condições do dia'],
+    notIncluded: ['Confirme alimentação, bebidas e demais itens ao reservar'],
+    stops: ['Ilha Anchieta', 'Praia das Palmas', 'Praia do Presídio', 'Praia do Sul', 'Sete Fontes', 'Praia do Flamengo'], image: 'barco',
   },
   {
-    id: 'aluguel-lancha-churrasqueira',
-    kind: 'aluguel',
-    name: 'Lancha com churrasqueira (diária)',
-    description:
-      'Ideal para comemorações e dias inteiros no mar. Disponibilidade de churrasqueira depende da embarcação.',
-    duration: 'Diária de até 8 horas (exemplo)',
-    capacity: 'Até 12 passageiros (exemplo)',
-    amenities: ['Churrasqueira (quando disponível)', 'Som', 'Área de convivência', 'Geladeira'],
-    price: 'R$ 4.200',
-    priceUnit: 'por diária',
-    included: ['Comandante e marinheiro', 'Coletes salva-vidas', 'Gelo e utensílios básicos'],
-    notIncluded: ['Carvão, alimentos e bebidas', 'Combustível excedente'],
-    image: 'churrasqueira',
+    id: 'aloha', kind: 'aluguel', name: 'Aloha',
+    description: 'Embarcação premium com amplo espaço, solário de popa, deck com churrasqueira, quarto e banheiro.',
+    duration: '7 horas', capacity: 'Até 11 pessoas',
+    amenities: ['Churrasqueira', 'Solário de popa', 'Quarto', 'Banheiro'],
+    price: 'R$ 3.000,00', priceUnit: 'por passeio',
+    included: ['Passeio privativo', 'Roteiro conforme condições do dia'],
+    notIncluded: ['Confirme alimentação, bebidas e demais itens ao reservar'],
+    stops: ['Ilha Anchieta', 'Praia das 7 Fontes', 'Praia do Flamengo'], image: 'lancha',
   },
   {
-    id: 'aluguel-barco-grupo',
-    kind: 'aluguel',
-    name: 'Barco para grupos (diária)',
-    description:
-      'Embarcação maior para grupos, famílias e confraternizações, com mais espaço para circulação.',
-    duration: 'Diária de até 8 horas (exemplo)',
-    capacity: 'Até 25 passageiros (exemplo)',
-    amenities: ['Som', 'Área coberta', 'Banheiro a bordo', 'Área de convivência'],
-    price: 'R$ 6.500',
-    priceUnit: 'por diária',
-    included: ['Comandante e marinheiros', 'Coletes salva-vidas'],
-    notIncluded: ['Alimentação e bebidas', 'Combustível excedente'],
-    image: 'barco',
+    id: 'lancha-20-pes', kind: 'aluguel', name: 'Lancha de 20 pés',
+    description: 'Passeio privativo com churrasqueira para curtir as ilhas e praias de Ubatuba.',
+    duration: 'Consulte a duração', capacity: 'Até 7 pessoas',
+    amenities: ['Churrasqueira', 'Passeio privativo'],
+    price: 'R$ 1.600,00', priceUnit: 'por passeio',
+    included: ['Passeio privativo'], notIncluded: ['Confirme os itens incluídos ao reservar'],
+    stops: ['Ilha Anchieta', 'Sete Fontes', 'Praia do Flamengo'], image: 'churrasqueira',
   },
+  {
+    id: 'carpe-diem', kind: 'aluguel', name: 'Carpe Diem',
+    description: 'Lancha com churrasqueira, som Bluetooth, cooler, espaguetes flutuantes, coletes e ducha de água doce.',
+    duration: 'Consulte a duração', capacity: 'Até 10 pessoas',
+    amenities: ['Churrasqueira', 'Som Bluetooth', 'Cooler', 'Ducha de água doce'],
+    price: 'R$ 1.800,00', priceUnit: 'por passeio',
+    included: ['Passeio privativo', 'Coletes salva-vidas'], notIncluded: ['Confirme alimentação e bebidas ao reservar'],
+    stops: ['Ilha das Couves', 'Ilha Rapada', 'Ilha Rachada', 'Ilha dos Porcos', 'Praia da Almada', 'Ilha do Prumirim'], image: 'lancha',
+  },
+  {
+    id: 'runner', kind: 'aluguel', name: 'Lancha Runner',
+    description: 'Lancha com churrasqueira, solário de proa, ampla praça e cabine com cama e banheiro.',
+    duration: 'Consulte a duração', capacity: 'Até 14 pessoas',
+    amenities: ['Churrasqueira', 'Solário de proa', 'Cabine', 'Banheiro'],
+    price: 'Consultar valor', priceUnit: 'mediante consulta',
+    included: ['Consulte as condições do passeio'],
+    notIncluded: ['Preço não informado no material recebido'], image: 'barco',
+  }
 ]
 
 export const allExperiences: Experience[] = [...tours, ...rentals]

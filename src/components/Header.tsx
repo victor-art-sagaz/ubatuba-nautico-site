@@ -38,12 +38,6 @@ export function Header() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
-      {siteConfig.demoMode && (
-        <div className="bg-navy-950 px-4 py-1.5 text-center text-[11px] font-medium text-sand-200 sm:text-xs">
-          Site demonstrativo: dados da empresa, preços, imagens e depoimentos são exemplos.
-        </div>
-      )}
-
       <div
         className={cn(
           'transition-colors duration-300',

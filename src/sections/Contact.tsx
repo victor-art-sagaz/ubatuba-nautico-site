@@ -44,7 +44,7 @@ export function Contact() {
         sectionId="contato"
         eyebrow="Contato"
         title="Fale com a nossa equipe"
-        subtitle="Tire dúvidas, peça orçamento ou combine o seu roteiro. Os dados abaixo são provisórios."
+        subtitle="Tire dúvidas, consulte a disponibilidade e combine os detalhes do seu passeio com a equipe da MUSA."
       />
 
       <div className="grid gap-8 lg:grid-cols-2">

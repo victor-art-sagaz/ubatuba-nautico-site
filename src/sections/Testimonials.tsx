@@ -1,6 +1,5 @@
 import { Quote } from 'lucide-react'
 import { testimonials } from '@/data/content'
-import { DemoBadge } from '@/components/DemoBadge'
 import { Reveal } from '@/components/Reveal'
 import { Section, SectionHeading } from '@/components/Section'
 
@@ -10,8 +9,8 @@ export function Testimonials() {
       <SectionHeading
         sectionId="depoimentos"
         eyebrow="Depoimentos"
-        title="O que os clientes poderão dizer"
-        subtitle="Os textos abaixo são exemplos de demonstração e não são avaliações reais. Substitua por depoimentos verdadeiros, com autorização de quem os escreveu."
+        title="Experiências compartilhadas por clientes"
+        subtitle="Relatos e registros compartilhados nas redes sociais. Fotos e publicações de clientes devem ser utilizadas no site com autorização."
       />
       <ul className="grid gap-6 md:grid-cols-3">
         {testimonials.map((item, index) => (
@@ -25,7 +24,6 @@ export function Testimonials() {
                     <span className="block text-sm font-semibold text-navy-900">{item.author}</span>
                     <span className="block text-xs text-navy-500">{item.context}</span>
                   </span>
-                  <DemoBadge>Depoimento de exemplo</DemoBadge>
                 </figcaption>
               </figure>
             </Reveal>

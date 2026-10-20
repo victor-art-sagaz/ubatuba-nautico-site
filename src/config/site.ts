@@ -8,24 +8,24 @@ const envWhatsapp = (import.meta.env.VITE_WHATSAPP_NUMBER ?? '') as string
 
 export const siteConfig = {
   /** Enquanto for true, o site exibe avisos de conteúdo demonstrativo. */
-  demoMode: true,
+  demoMode: false,
 
-  name: '[NOME DA EMPRESA]',
+  name: 'MUSA Turismo Náutico',
   tagline: 'Passeios de lancha e barco em Ubatuba',
   city: 'Ubatuba, São Paulo',
-  boardingPoint: 'Píer do Saco da Ribeira, Ubatuba-SP',
+  boardingPoint: 'Iate Clube de Ubatuba, Ubatuba-SP',
 
   /** Somente dígitos com DDI e DDD. Ex.: 5512900000000. Vazio = não configurado. */
-  whatsappNumber: envWhatsapp.replace(/\D/g, ''),
-  whatsappPlaceholder: '[NUMERO DE WHATSAPP]',
-  phone: '[TELEFONE]',
-  email: '[EMAIL DA EMPRESA]',
-  instagramUrl: '[LINK DO INSTAGRAM]',
-  facebookUrl: '[LINK DO FACEBOOK]',
-  domain: '[DOMINIO]',
+  whatsappNumber: (envWhatsapp || '5512988337969').replace(/\D/g, ''),
+  whatsappPlaceholder: '(12) 98833-7969',
+  phone: '(12) 98833-7969',
+  email: '',
+  instagramUrl: 'https://www.instagram.com/musaturismonautico/',
+  facebookUrl: '',
+  domain: 'ubatuba-nautico-site.netlify.app',
 
   /** Texto usado para o mapa incorporado. */
-  mapQuery: 'Píer do Saco da Ribeira, Ubatuba-SP',
+  mapQuery: 'Iate Clube de Ubatuba, Ubatuba, SP',
 } as const
 
 /** Valor ainda não preenchido (vazio ou entre colchetes). */

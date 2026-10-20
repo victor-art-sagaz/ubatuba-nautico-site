@@ -1,6 +1,5 @@
 import { Compass, Route } from 'lucide-react'
 import { rentals } from '@/data/experiences'
-import { DemoBadge } from '@/components/DemoBadge'
 import { ExperienceCard } from '@/components/ExperienceCard'
 import { Reveal } from '@/components/Reveal'
 import { Section, SectionHeading } from '@/components/Section'
@@ -25,7 +24,7 @@ export function Rentals({ onRequest }: RentalsProps) {
           <div>
             <h3 className="font-sans text-base font-semibold">Passeio com roteiro</h3>
             <p className="mt-1 text-sm leading-relaxed text-navy-600">
-              Percurso e duração já definidos pela empresa; o valor é por pessoa (exemplo).
+              Percurso e duração já definidos pela empresa; o valor por pessoa conforme indicado no cartão.
             </p>
           </div>
         </div>
@@ -41,9 +40,6 @@ export function Rentals({ onRequest }: RentalsProps) {
         </div>
       </div>
 
-      <div className="mb-8">
-        <DemoBadge>Conteúdo demonstrativo: embarcações, capacidades e preços de exemplo</DemoBadge>
-      </div>
 
       <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {rentals.map((rental, index) => (

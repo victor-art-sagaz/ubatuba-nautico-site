@@ -11,7 +11,7 @@ export const faqItems: FaqItem[] = [
     id: 'faq-embarque',
     question: 'Onde é o embarque?',
     answer:
-      'O ponto de embarque de referência é o Píer do Saco da Ribeira, em Ubatuba-SP. Informações finais de horário e orientação de chegada serão passadas na confirmação.',
+      'O embarque dos passeios da MUSA Turismo Náutico é no Iate Clube de Ubatuba. O horário e as orientações de chegada serão confirmados pela equipe após a solicitação.',
   },
   {
     id: 'faq-clima',
@@ -41,7 +41,7 @@ export const faqItems: FaqItem[] = [
     id: 'faq-pagamento',
     question: 'Quais são as formas de pagamento?',
     answer:
-      'As formas de pagamento serão definidas pela empresa. Os valores exibidos neste site são demonstrativos e não representam preços reais.',
+      'Consulte as formas de pagamento disponíveis diretamente com a equipe ao solicitar sua reserva. Os preços exibidos são valores iniciais e aparecem com a indicação 'A partir de'.',
   },
 ]
 
@@ -72,32 +72,26 @@ export const destinations: Destination[] = [
   },
   {
     id: 'dest-saco-ribeira',
-    name: 'Saco da Ribeira',
+    name: 'Iate Clube de Ubatuba',
     type: 'Embarque',
     description:
-      'Região de píeres e marinas onde fica o ponto de embarque de referência deste modelo demonstrativo.',
+      'Local de embarque dos passeios da MUSA Turismo Náutico. Confirme com a equipe as orientações de chegada.',
     image: 'lancha',
   },
 ]
 
 export const testimonials: Testimonial[] = [
   {
-    id: 't1',
-    text: 'Exemplo de depoimento: espaço reservado para o relato de um cliente real sobre o passeio.',
-    author: 'Cliente demonstrativo 1',
-    context: 'Passeio pelas ilhas',
+    id: 'relato-capitao',
+    text: 'Relato compartilhado por cliente destaca a dedicação e a paciência do capitão durante o passeio.',
+    author: 'Relato de cliente',
+    context: 'Publicação compartilhada no Instagram',
   },
   {
-    id: 't2',
-    text: 'Exemplo de depoimento: aqui entrará um comentário real sobre atendimento, pontualidade e segurança.',
-    author: 'Cliente demonstrativo 2',
-    context: 'Aluguel de lancha',
-  },
-  {
-    id: 't3',
-    text: 'Exemplo de depoimento: substitua por avaliações verdadeiras, com autorização de quem as escreveu.',
-    author: 'Cliente demonstrativo 3',
-    context: 'Pôr do sol a bordo',
+    id: 'experiencia-grupo',
+    text: 'Registros compartilhados por clientes mostram momentos de passeio em grupo a bordo da MUSA.',
+    author: 'Experiências de clientes',
+    context: 'Fotos compartilhadas nas redes sociais',
   },
 ]
 

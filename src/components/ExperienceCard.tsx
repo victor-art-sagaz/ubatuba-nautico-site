@@ -2,7 +2,6 @@ import { Anchor, CalendarCheck, Check, Clock, Route, Users } from 'lucide-react'
 import type { Experience } from '@/types'
 import { images } from '@/data/images'
 import { Button } from '@/components/Button'
-import { DemoBadge } from '@/components/DemoBadge'
 import { OptimizedImage } from '@/components/OptimizedImage'
 
 interface ExperienceCardProps {
@@ -55,7 +54,7 @@ export function ExperienceCard({ experience, onRequest }: ExperienceCardProps) {
 
         {experience.stops && (
           <p className="mt-4 rounded-xl bg-sea-50 px-3 py-2 text-sm text-sea-900">
-            <span className="font-semibold">Roteiro de exemplo:</span> {experience.stops.join(' → ')}
+            <span className="font-semibold">Roteiro:</span> {experience.stops.join(' → ')}
           </p>
         )}
 
@@ -85,11 +84,10 @@ export function ExperienceCard({ experience, onRequest }: ExperienceCardProps) {
         <div className="mt-auto pt-6">
           <div className="mb-4 flex flex-wrap items-end justify-between gap-2 border-t border-navy-100 pt-4">
             <p className="text-navy-900">
-              <span className="text-xs text-navy-500">A partir de</span>
+              {experience.price === 'Consultar valor' ? null : <span className="text-xs text-navy-500">A partir de</span>}
               <span className="block font-display text-2xl font-semibold">{experience.price}</span>
               <span className="text-xs text-navy-500">{experience.priceUnit}</span>
             </p>
-            <DemoBadge />
           </div>
           <Button variant="dark" className="w-full" onClick={() => onRequest(experience.id)}>
             <CalendarCheck className="h-4 w-4" aria-hidden="true" />
