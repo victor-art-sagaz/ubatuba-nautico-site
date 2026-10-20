@@ -1,101 +1,172 @@
-import { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { Menu, X } from 'lucide-react'
-import { navItems } from '@/config/navigation'
-
-import { ButtonLink } from '@/components/Button'
+import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import { Anchor, Compass, Ship, Menu, X, ChevronDown } from 'lucide-react'
 import { Logo } from '@/components/Logo'
-import { cn } from '@/lib/cn'
 
 export function Header() {
-  const [open, setOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const { pathname, hash, key } = useLocation()
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [boatsDropdownOpen, setBoatsDropdownOpen] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true)
+      } else {
+        setIsScrolled(false)
+      }
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Fecha o menu ao navegar.
-  useEffect(() => {
-    setOpen(false)
-  }, [pathname, hash, key])
-
-  // Fecha com a tecla Esc.
-  useEffect(() => {
-    if (!open) return
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false)
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [open])
-
-  const solid = pathname !== '/' || scrolled || open
+  const boats = [
+    { name: 'Musa II', hash: '#embarcacoes' },
+    { name: 'Aloha', hash: '#embarcacoes' },
+    { name: 'Lancha 20 pés', hash: '#embarcacoes' },
+    { name: 'Carpe Diem', hash: '#embarcacoes' },
+    { name: 'Runner', hash: '#embarcacoes' },
+  ]
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
+    <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 p-4">
       <div
-        className={cn(
-          'transition-colors duration-300',
-          solid ? 'bg-navy-900/95 shadow-soft backdrop-blur' : 'bg-gradient-to-b from-navy-950/70 to-transparent',
-        )}
+        className={`mx-auto max-w-7xl rounded-2xl transition-all duration-300 ${
+          isScrolled
+            ? 'bg-navy-950/80 backdrop-blur-md border border-white/10 shadow-lg py-3 px-6'
+            : 'bg-navy-950/40 backdrop-blur-sm border border-white/5 py-4 px-6'
+        }`}
       >
-        <div className="container flex h-16 items-center justify-between gap-4 sm:h-[72px]">
+        <div className="flex items-center justify-between">
           <Logo tone="light" />
 
-          <nav aria-label="Navegação principal" className="hidden items-center gap-1 lg:flex">
-            {navItems.map((item) => (
-              <Link
-                key={item.hash}
-                to={{ pathname: '/', hash: item.hash }}
-                className="rounded-full px-3.5 py-2 text-sm font-medium text-white/90 transition hover:bg-white/10 hover:text-white"
+          {/* NAVEGAÇÃO DESKTOP */}
+          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-white">
+            <Link
+              to="/"
+              className="flex items-center gap-1.5 transition hover:text-cyan-400"
+            >
+              <Compass className="w-4 h-4 text-cyan-400" />
+              Início
+            </Link>
+
+            {/* DROPDOWN DE EMBARCAÇÕES */}
+            <div className="relative group">
+              <button
+                type="button"
+                onClick={() => setBoatsDropdownOpen(!boatsDropdownOpen)}
+                onMouseEnter={() => setBoatsDropdownOpen(true)}
+                className="flex items-center gap-1.5 transition hover:text-cyan-400 py-2"
               >
-                {item.label}
-              </Link>
-            ))}
+                <Ship className="w-4 h-4 text-cyan-400" />
+                Embarcações
+                <ChevronDown className="w-3.5 h-3.5 opacity-70 group-hover:rotate-180 transition-transform duration-200" />
+              </button>
+
+              <div
+                onMouseLeave={() => setBoatsDropdownOpen(false)}
+                className={`absolute left-0 top-full mt-1 w-48 rounded-xl bg-navy-900/95 backdrop-blur-md border border-white/10 p-2 shadow-xl transition-all duration-200 ${
+                  boatsDropdownOpen
+                    ? 'opacity-100 visible translate-y-0'
+                    : 'opacity-0 invisible -translate-y-2'
+                }`}
+              >
+                {boats.map((boat) => (
+                  <Link
+                    key={boat.name}
+                    to={{ pathname: '/', hash: boat.hash }}
+                    className="block px-3 py-2 rounded-lg text-sm text-gray-200 hover:bg-white/10 hover:text-cyan-300 transition"
+                  >
+                    {boat.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <Link
+              to={{ pathname: '/', hash: '#roteiros' }}
+              className="transition hover:text-cyan-400"
+            >
+              Roteiros
+            </Link>
+
+            <Link
+              to={{ pathname: '/', hash: '#faq' }}
+              className="transition hover:text-cyan-400"
+            >
+              Dúvidas
+            </Link>
           </nav>
 
-          <div className="flex items-center gap-2">
-            <ButtonLink to={{ pathname: '/', hash: '#reserva' }} className="hidden sm:inline-flex">
-              Solicitar reserva
-            </ButtonLink>
-            <button
-              type="button"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full text-white transition hover:bg-white/10 lg:hidden"
-              aria-label={open ? 'Fechar menu' : 'Abrir menu'}
-              aria-expanded={open}
-              aria-controls="menu-mobile"
-              onClick={() => setOpen((value) => !value)}
+          {/* BOTÃO RESERVA */}
+          <div className="hidden md:block">
+            <Link
+              to={{ pathname: '/', hash: '#reserva' }}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-navy-950 font-semibold text-sm transition transform hover:scale-105 shadow-md"
             >
-              {open ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
-            </button>
+              <Anchor className="w-4 h-4" />
+              Reservar Passeio
+            </Link>
           </div>
+
+          {/* BOTÃO MENU MOBILE */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden text-white p-2"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
 
-        {open && (
-          <nav id="menu-mobile" aria-label="Menu móvel" className="border-t border-white/10 lg:hidden">
-            <ul className="container flex flex-col gap-1 py-4">
-              {navItems.map((item) => (
-                <li key={item.hash}>
-                  <Link
-                    to={{ pathname: '/', hash: item.hash }}
-                    className="block rounded-xl px-3 py-3 text-base font-medium text-white hover:bg-white/10"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
+        {/* MENU MOBILE */}
+        {mobileMenuOpen && (
+          <div className="md:hidden mt-4 pt-4 border-t border-white/10 space-y-3 text-white text-sm">
+            <Link
+              to="/"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block py-2 hover:text-cyan-400"
+            >
+              Início
+            </Link>
+            <div className="space-y-1 pl-2 border-l border-cyan-500/30">
+              <p className="text-xs font-semibold text-cyan-400 uppercase tracking-wider py-1">
+                Nossas Embarcações
+              </p>
+              {boats.map((boat) => (
+                <Link
+                  key={boat.name}
+                  to={{ pathname: '/', hash: boat.hash }}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-1.5 text-gray-300 hover:text-white"
+                >
+                  {boat.name}
+                </Link>
               ))}
-              <li className="pt-2">
-                <ButtonLink to={{ pathname: '/', hash: '#reserva' }} size="lg" className="w-full">
-                  Solicitar reserva
-                </ButtonLink>
-              </li>
-            </ul>
-          </nav>
+            </div>
+            <Link
+              to={{ pathname: '/', hash: '#roteiros' }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="block py-2 hover:text-cyan-400"
+            >
+              Roteiros
+            </Link>
+            <Link
+              to={{ pathname: '/', hash: '#faq' }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="block py-2 hover:text-cyan-400"
+            >
+              Dúvidas
+            </Link>
+            <Link
+              to={{ pathname: '/', hash: '#reserva' }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-cyan-500 text-navy-950 font-semibold mt-2"
+            >
+              <Anchor className="w-4 h-4" />
+              Reservar Passeio
+            </Link>
+          </div>
         )}
       </div>
     </header>
