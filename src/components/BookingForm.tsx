@@ -1,5 +1,5 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react'
-import { AlertTriangle, CheckCircle2, Info, Send, Ship } from 'lucide-react'
+import { AlertTriangle, CheckCircle2, Info, Send } from 'lucide-react'
 import type { BookingFormValues, BookingPayload } from '@/types'
 import { rentals, tours } from '@/data/experiences'
 import { emptyForm, maxDateISO, periodOptions, todayISO, validateBooking, type FieldErrors } from '@/lib/validation'
@@ -387,33 +387,53 @@ export function BookingForm({ preset }: BookingFormProps) {
         condições pelo WhatsApp. Seus dados serão usados apenas para atender a esta solicitação.
       </p>
 
-      {/* BOTÃO COM ANIMAÇÃO NÁUTICA DA LANCHA */}
+      {/* BOTÃO COM ANIMAÇÃO NÁUTICA DA LANCHA E TRIPULANTE */}
       <button
         type="submit"
         disabled={submitting}
         className="relative mt-6 w-full overflow-hidden rounded-2xl bg-cyan-600 py-4 px-6 font-semibold text-white shadow-md transition-all duration-300 hover:bg-cyan-500 hover:shadow-cyan-500/25 active:scale-[0.99] disabled:cursor-not-allowed"
       >
-        {/* ONDAS E RASTRO */}
+        {/* TRILHO DE ONDAS NO AMBIENTE */}
         {submitting && (
-          <div className="absolute inset-0 flex items-center justify-center bg-cyan-700">
-            <div className="absolute inset-0 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:16px_16px] opacity-30 animate-pulse" />
-            <span className="z-10 text-xs uppercase tracking-widest text-cyan-100 font-bold animate-pulse">
-              A preparar o seu embarque...
+          <div className="absolute inset-0 bg-cyan-800 flex items-center overflow-hidden">
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.15)_50%,transparent_100%)] animate-pulse" />
+            <span className="z-10 w-full text-center text-xs uppercase tracking-widest text-cyan-100 font-bold">
+              Iniciando embarque...
             </span>
           </div>
         )}
 
-        {/* ANIMACÃO DA LANCHA DESLIZANDO */}
+        {/* LANCHA EM VETOR DESLIZANDO COM TRIPULANTE E ONDAS */}
         {submitting && (
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 transition-all duration-[2100ms] ease-in-out translate-x-[260px] sm:translate-x-[420px]">
+          <div className="absolute left-[-80px] top-1/2 -translate-y-1/2 transition-all duration-[2200ms] ease-in-out translate-x-[380px] sm:translate-x-[520px]">
             <div className="relative flex items-center">
-              <Ship className="h-7 w-7 text-white -rotate-6 transition-transform" />
-              <div className="h-1 w-12 bg-gradient-to-l from-white/80 to-transparent rounded-full -ml-1 blur-[1px]" />
+              {/* Rastro de ondas na água atrás da lancha */}
+              <div className="absolute -left-12 bottom-0 flex items-center gap-0.5">
+                <div className="w-6 h-1 bg-white/70 rounded-full blur-[0.5px] animate-ping" />
+                <div className="w-10 h-1.5 bg-cyan-200/80 rounded-full blur-[1px]" />
+              </div>
+
+              {/* Desenho em vetor da Lancha de Passeio levemente inclinada */}
+              <svg className="w-16 h-8 -rotate-3 text-white drop-shadow-md" viewBox="0 0 100 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Tripulante / Piloto no comando */}
+                <circle cx="45" cy="18" r="4" fill="currentColor" />
+                <path d="M45 22 L42 32 M45 25 L50 28" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                
+                {/* Casco da Lancha (Design Aerodinâmico) */}
+                <path d="M10 38 L25 28 L75 28 L95 38 L85 42 L15 42 Z" fill="currentColor" />
+                {/* Parabrisa */}
+                <path d="M35 28 L48 18 L62 28 Z" fill="#38bdf8" opacity="0.9" />
+                {/* Detalhe lateral decorativo */}
+                <path d="M20 36 L88 36" stroke="#f97316" strokeWidth="2.5" strokeLinecap="round" />
+              </svg>
+
+              {/* Borrifos de água na proa */}
+              <div className="absolute right-0 bottom-1 w-3 h-3 bg-white/90 rounded-full animate-bounce blur-[0.5px]" />
             </div>
           </div>
         )}
 
-        {/* CONTEÚDO PADRÃO */}
+        {/* CONTEÚDO PADRÃO DO BOTÃO */}
         <div className={`flex items-center justify-center gap-2 transition-opacity duration-300 ${submitting ? 'opacity-0' : 'opacity-100'}`}>
           <Send className="h-5 w-5" aria-hidden="true" />
           <span>Solicitar reserva</span>
@@ -422,4 +442,3 @@ export function BookingForm({ preset }: BookingFormProps) {
     </form>
   )
 }
-
