@@ -6,7 +6,7 @@ import { Amenities } from '@/sections/Amenities'
 import { Booking } from '@/sections/Booking'
 import { Contact } from '@/sections/Contact'
 import { Destinations } from '@/sections/Destinations'
-import { Faq } from '@/sections/Faq'
+import { FAQ } from '@/sections/Faq'
 import { Gallery } from '@/sections/Gallery'
 import { Hero } from '@/sections/Hero'
 import { Maintenance } from '@/sections/Maintenance'
@@ -38,7 +38,7 @@ export function HomePage() {
         <Amenities />
         <Testimonials />
         <Destinations />
-        <Faq />
+        <FAQ />
         <Booking preset={preset} />
         <Contact />
       </main>

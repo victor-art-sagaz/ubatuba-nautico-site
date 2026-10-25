@@ -99,7 +99,7 @@ export function BookingForm({ preset }: BookingFormProps) {
     event.preventDefault()
     if (status === 'submitting') return
 
-    if (values.website.trim() !== '') {
+    if (values.website && values.website.trim() !== '') {
       setStatus('error')
       return
     }
@@ -118,7 +118,7 @@ export function BookingForm({ preset }: BookingFormProps) {
 
     setTimeout(async () => {
       try {
-        const outcome = await submitBooking(validation.payload as any)
+        const outcome = await submitBooking(validation.payload as unknown as BookingFormValues)
         setWhatsappUrl(outcome.whatsappUrl || null)
         setStatus(outcome.whatsappUrl ? 'ready' : 'unconfigured')
       } catch {
@@ -171,7 +171,6 @@ export function BookingForm({ preset }: BookingFormProps) {
       aria-describedby="booking-disclaimer"
       className="rounded-3xl border border-navy-100 bg-white p-6 shadow-lift sm:p-8"
     >
-      {/* KEYFRAMES AJUSTADOS COM PÉS EXATAMENTE SOBRE O PÍER */}
       <style>{`
         @keyframes boatMove {
           0% { transform: translateX(-160px); }
@@ -185,11 +184,11 @@ export function BookingForm({ preset }: BookingFormProps) {
         }
         @keyframes stickWalkJump {
           0% { transform: translate(0px, 0px); opacity: 1; }
-          32% { transform: translate(68px, 0px); } /* Caminhada exata no píer */
-          48% { transform: translate(105px, -14px); } /* Pulo suave */
-          58% { transform: translate(122px, 10px); } /* Entrada na cabine da lancha */
+          32% { transform: translate(68px, 0px); }
+          48% { transform: translate(105px, -14px); }
+          58% { transform: translate(122px, 10px); }
           65% { transform: translate(122px, 10px); }
-          100% { transform: translate(687px, 10px); } /* Navegação */
+          100% { transform: translate(687px, 10px); }
         }
         @keyframes stickAnimateLimbs {
           0%, 45% { transform: rotate(0deg); }
@@ -376,7 +375,6 @@ export function BookingForm({ preset }: BookingFormProps) {
         Enviar este formulário não garante a reserva: {siteConfig.name} confirmará a disponibilidade e o valor final pelo WhatsApp.
       </p>
 
-      {/* BOTÃO COM POSICIONAMENTO VERTICAL CORRIGIDO */}
       <button
         type="submit"
         disabled={submitting}
@@ -384,10 +382,8 @@ export function BookingForm({ preset }: BookingFormProps) {
       >
         {submitting ? (
           <div className="relative h-full w-full overflow-hidden bg-[#e2e8f0]">
-            {/* 1. HORIZONTE DA ÁGUA */}
             <div className="absolute inset-x-0 bottom-9 z-0 h-[3px] bg-[#0284c7]" />
 
-            {/* 2. TEXTURA DO MAR REALISTA */}
             <div className="absolute inset-x-0 bottom-0 z-0 h-9 bg-[#0e4b75] overflow-hidden">
               <svg className="w-full h-full opacity-60" viewBox="0 0 400 40" preserveAspectRatio="none">
                 <path d="M0 5 Q 50 0, 100 5 T 200 5 T 300 5 T 400 5 L 400 40 L 0 40 Z" fill="#0284c7" />
@@ -397,7 +393,6 @@ export function BookingForm({ preset }: BookingFormProps) {
               </svg>
             </div>
 
-            {/* 3. STICKMAN BONECO (Z-15: PÉS EXATAMENTE SOBRE O PÍER) */}
             <div
               className="absolute bottom-[44px] left-3 z-15"
               style={{ animation: 'stickWalkJump 4.8s cubic-bezier(0.4, 0, 0.2, 1) forwards' }}
@@ -414,7 +409,6 @@ export function BookingForm({ preset }: BookingFormProps) {
               </svg>
             </div>
 
-            {/* 4. LANCHA MUSA (Z-20: SOBREPOSTA ÀS PERNAS DO BONECO) */}
             <div
               className="absolute bottom-[16px] z-20"
               style={{ animation: 'boatMove 4.8s cubic-bezier(0.4, 0, 0.2, 1) forwards' }}
@@ -429,7 +423,6 @@ export function BookingForm({ preset }: BookingFormProps) {
                   <path d="M25 30 L102 30" stroke="#0891b2" strokeWidth="1.5" />
                 </svg>
 
-                {/* ESPUMA D'ÁGUA */}
                 <div
                   className="absolute -left-12 bottom-1 z-25"
                   style={{ animation: 'wakeFoam 4.8s ease-in-out forwards' }}
@@ -443,7 +436,6 @@ export function BookingForm({ preset }: BookingFormProps) {
               </div>
             </div>
 
-            {/* 5. PÍER FIXO (Z-30) */}
             <div className="absolute left-0 bottom-8 z-30 flex flex-col items-start">
               <div className="h-2.5 w-28 bg-[#334155] rounded-r-sm shadow-sm" />
               <div className="ml-20 h-6 w-[6px] bg-[#1e293b]" />
