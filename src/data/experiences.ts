@@ -1,66 +1,140 @@
-import type { Experience } from '@/types'
+export interface Experience {
+  id: string
+  name: string
+  category: 'tour' | 'rental'
+  price: number
+  priceType: 'per_person' | 'total'
+  capacity: number
+  durationHours: number
+  description: string
+  features: string[]
+  routes?: string[]
+  image: string
+  instagramLink?: string
+}
 
-/** Dados comerciais informados pela empresa. Valores exibidos como preço inicial. */
 export const tours: Experience[] = [
-{
-    id: 'compartilhado', kind: 'passeio', name: 'Passeio compartilhado',
-    description: 'Uma opção para conhecer as ilhas de Ubatuba dividindo o passeio com outros passageiros.',
-    duration: '6 horas', capacity: 'Consulte a disponibilidade',
-    amenities: ['Passeio em grupo', 'Contato com a natureza'],
-    price: 'R$ 250,00', priceUnit: 'por pessoa',
-    included: ['Passeio compartilhado'], notIncluded: ['Confirme os itens incluídos ao reservar'],
-    stops: ['Ilha das Couves', 'Ilha do Prumirim'], image: 'ilha',
-  }
+  {
+    id: 'passeio-compartilhado',
+    name: 'Passeio Compartilhado',
+    category: 'tour',
+    price: 250,
+    priceType: 'per_person',
+    capacity: 12,
+    durationHours: 6,
+    description: 'Deseja viver essa experiência única economizando? Conheça nossas opções de passeio compartilhado por Ubatuba!',
+    features: [
+      '6 horas de passeio',
+      'Economia e conforto',
+      'Guia especializado local',
+      'Som bluetooth a bordo',
+    ],
+    routes: ['Ilha das Couves', 'Ilha do Prumirim'],
+    image: '/images/passeio-compartilhado.jpg',
+  },
 ]
 
 export const rentals: Experience[] = [
-{
-    id: 'musa-ii', kind: 'aluguel', name: 'Musa II',
-    description: 'Lancha espaçosa com sala e cozinha integradas, 3 quartos, 2 banheiros e flybridge.',
-    duration: '7 horas', capacity: 'Até 16 pessoas',
-    amenities: ['Churrasqueira', 'Cooler', 'Espaguetes flutuantes', 'Flybridge'],
-    price: 'R$ 5.500,00', priceUnit: 'por passeio',
-    included: ['Passeio privativo', 'Roteiro conforme condições do dia'],
-    notIncluded: ['Confirme alimentação, bebidas e demais itens ao reservar'],
-    stops: ['Ilha Anchieta', 'Praia das Palmas', 'Praia do Presídio', 'Praia do Sul', 'Sete Fontes', 'Praia do Flamengo'], image: 'barco',
+  {
+    id: 'embarcacao-20-pes',
+    name: 'Lancha 20 Pés',
+    category: 'rental',
+    price: 1600,
+    priceType: 'total',
+    capacity: 7,
+    durationHours: 6,
+    description: 'Ideal para grupos de até 7 pessoas. Passeio privativo com churrasqueira para curtir as melhores praias de Ubatuba.',
+    features: [
+      'Capacidade para 7 pessoas',
+      'Churrasqueira a bordo',
+      'Som Bluetooth',
+      'Ducha de água doce',
+    ],
+    routes: ['Ilha Anchieta', 'Praia das Sete Fontes', 'Praia do Flamengo'],
+    image: '/images/lancha-20-pes.jpg',
   },
   {
-    id: 'aloha', kind: 'aluguel', name: 'Aloha',
-    description: 'Embarcação premium com amplo espaço, solário de popa, deck com churrasqueira, quarto e banheiro.',
-    duration: '7 horas', capacity: 'Até 11 pessoas',
-    amenities: ['Churrasqueira', 'Solário de popa', 'Quarto', 'Banheiro'],
-    price: 'R$ 3.000,00', priceUnit: 'por passeio',
-    included: ['Passeio privativo', 'Roteiro conforme condições do dia'],
-    notIncluded: ['Confirme alimentação, bebidas e demais itens ao reservar'],
-    stops: ['Ilha Anchieta', 'Praia das 7 Fontes', 'Praia do Flamengo'], image: 'lancha',
+    id: 'carpe-diem',
+    name: 'Carpe Diem',
+    category: 'rental',
+    price: 1800,
+    priceType: 'total',
+    capacity: 10,
+    durationHours: 6,
+    description: 'Para até 10 pessoas! Possui churrasqueira, som Bluetooth, cooler, espaguetes flutuantes, coletes e ducha de água doce.',
+    features: [
+      'Capacidade para 10 pessoas',
+      'Churrasqueira e Cooler',
+      'Espaguetes flutuantes e coletes',
+      'Ducha de água doce e som Bluetooth',
+    ],
+    routes: [
+      'Ilha das Couves',
+      'Ilha Rapada',
+      'Ilha Rachada',
+      'Ilha dos Porcos',
+      'Praia da Almada',
+      'Ilha do Prumirim',
+    ],
+    image: '/images/carpe-diem.jpg',
   },
   {
-    id: 'lancha-20-pes', kind: 'aluguel', name: 'Lancha de 20 pés',
-    description: 'Passeio privativo com churrasqueira para curtir as ilhas e praias de Ubatuba.',
-    duration: 'Consulte a duração', capacity: 'Até 7 pessoas',
-    amenities: ['Churrasqueira', 'Passeio privativo'],
-    price: 'R$ 1.600,00', priceUnit: 'por passeio',
-    included: ['Passeio privativo'], notIncluded: ['Confirme os itens incluídos ao reservar'],
-    stops: ['Ilha Anchieta', 'Sete Fontes', 'Praia do Flamengo'], image: 'churrasqueira',
+    id: 'aloha',
+    name: 'Embarcação Aloha (Offshore)',
+    category: 'rental',
+    price: 3000,
+    priceType: 'total',
+    capacity: 11,
+    durationHours: 7,
+    description: 'Embarcação premium estilo Offshore. Amplo espaço com solarium de popa, deck com churrasqueira, 1 quarto e 1 banheiro de primeira linha.',
+    features: [
+      'Capacidade para 11 pessoas',
+      '7 horas de passeio',
+      'Solarium de popa e deck com churrasqueira',
+      '1 Quarto e 1 Banheiro de primeira linha',
+    ],
+    routes: [
+      'Ilha Anchieta (Praia das Palmas, Presídio e do Sul)',
+      'Praia das Sete Fontes',
+      'Praia do Flamengo',
+    ],
+    image: '/images/aloha.jpg',
   },
   {
-    id: 'carpe-diem', kind: 'aluguel', name: 'Carpe Diem',
-    description: 'Lancha com churrasqueira, som Bluetooth, cooler, espaguetes flutuantes, coletes e ducha de água doce.',
-    duration: 'Consulte a duração', capacity: 'Até 10 pessoas',
-    amenities: ['Churrasqueira', 'Som Bluetooth', 'Cooler', 'Ducha de água doce'],
-    price: 'R$ 1.800,00', priceUnit: 'por passeio',
-    included: ['Passeio privativo', 'Coletes salva-vidas'], notIncluded: ['Confirme alimentação e bebidas ao reservar'],
-    stops: ['Ilha das Couves', 'Ilha Rapada', 'Ilha Rachada', 'Ilha dos Porcos', 'Praia da Almada', 'Ilha do Prumirim'], image: 'lancha',
+    id: 'lancha-runner',
+    name: 'Lancha Runner',
+    category: 'rental',
+    price: 2500,
+    priceType: 'total',
+    capacity: 14,
+    durationHours: 6,
+    description: 'Estrutura completa com churrasqueira, solarium de proa para tomar sol, ampla praça para garantir o conforto e cabine com cama e banheiro.',
+    features: [
+      'Capacidade para até 14 pessoas',
+      'Solarium de proa para tomar sol',
+      'Praça espaçosa e confortável',
+      'Cabine com cama e banheiro',
+      'Churrasqueira a bordo',
+    ],
+    routes: ['Roteiros personalizados pelo Norte e Sul de Ubatuba'],
+    image: '/images/runner.jpg',
   },
   {
-    id: 'runner', kind: 'aluguel', name: 'Lancha Runner',
-    description: 'Lancha com churrasqueira, solário de proa, ampla praça e cabine com cama e banheiro.',
-    duration: 'Consulte a duração', capacity: 'Até 14 pessoas',
-    amenities: ['Churrasqueira', 'Solário de proa', 'Cabine', 'Banheiro'],
-    price: 'Consultar valor', priceUnit: 'mediante consulta',
-    included: ['Consulte as condições do passeio'],
-    notIncluded: ['Preço não informado no material recebido'], image: 'barco',
-  }
+    id: 'musa-ii',
+    name: 'Musa II (Passeio e Pernoite)',
+    category: 'rental',
+    price: 3500,
+    priceType: 'total',
+    capacity: 12,
+    durationHours: 8,
+    description: 'A embarcação principal MUSA. Amplo salão interno, flybridge, cozinha e opção de pernoite a bordo reservando pelo Airbnb.',
+    features: [
+      'Opção de Pernoite à bordo (Airbnb)',
+      'Flybridge espaçoso e acabamento em madeira',
+      'Cozinha, salão interno e camarote',
+      'Churrasqueira e som náutico de alta qualidade',
+    ],
+    routes: ['Roteiros exclusivos e Pernoite em ilhas paradisíacas'],
+    image: '/images/musa-ii.jpg',
+  },
 ]
-
-export const allExperiences: Experience[] = [...tours, ...rentals]
